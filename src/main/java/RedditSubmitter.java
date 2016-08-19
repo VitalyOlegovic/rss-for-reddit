@@ -45,7 +45,7 @@ public class RedditSubmitter {
         LinkDAO linkDAO = null;
         try {
             linkDAO = new LinkDAO();
-            List<LinkBean> linkBeanList = linkDAO.unpublished();
+            List<LinkBean> linkBeanList = linkDAO.unpublished("testitaly");
             RedditSubmitter redditSubmitter = new RedditSubmitter();
 
             for(LinkBean linkBean : linkBeanList){

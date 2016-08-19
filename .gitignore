@@ -13,3 +13,6 @@ hs_err_pid*
 /.idea/
 /src/main/resources/authentication.properties
 /reddit-bot.iml
+/db_file.properties
+/db_file.script
+/target/

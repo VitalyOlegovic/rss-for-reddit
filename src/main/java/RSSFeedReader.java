@@ -45,17 +45,19 @@ public class RSSFeedReader {
         return null;
     }
 
-    public static List<LinkBean> readFeeds() {
+    public static List<LinkBean> readFeeds(String subreddit) {
         List<LinkBean> list = new ArrayList<LinkBean>();
         FeedDAO feedDAO = new FeedDAO();
-        List<FeedBean> feedList = feedDAO.getFeeds();
+        List<FeedBean> feedList = feedDAO.getFeeds(subreddit);
 
         LinkDAO linkDAO = new LinkDAO();
 
         for(FeedBean feedBean : feedList){
             List<LinkBean> links = readFeeds(feedBean);
             for(LinkBean l : links){
-                linkDAO.persist(l);
+                if(!linkDAO.existsByUrlSubreddit(l.getUrl().toExternalForm(),l.getSubreddit())) {
+                    linkDAO.persist(l);
+                }
             }
         }
 
