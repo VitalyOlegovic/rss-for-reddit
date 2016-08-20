@@ -16,3 +16,4 @@ hs_err_pid*
 /db_file.properties
 /db_file.script
 /target/
+/log.out

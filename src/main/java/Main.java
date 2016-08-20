@@ -1,92 +1,49 @@
-import net.dean.jraw.ApiException;
-import net.dean.jraw.http.NetworkException;
+import org.quartz.*;
+import org.quartz.impl.StdSchedulerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.List;
-import java.util.Set;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
+
+import static org.quartz.CronScheduleBuilder.cronSchedule;
+import static org.quartz.TriggerBuilder.newTrigger;
+import static org.quartz.JobBuilder.*;
 
 public class Main {
 
     private final static Logger logger = LoggerFactory.getLogger(Main.class);
 
     public static void main(String ... args){
-        SubredditDAO subredditDAO = new SubredditDAO();
-        List<SubredditBean> list = subredditDAO.getSubreddits();
-        logger.debug(list.toString());
-
-        for(SubredditBean subredditBean : list){
-            submitLinks(subredditBean);
-        }
-    }
-
-    private static void submitLinks(SubredditBean subredditBean){
-        LinkDAO linkDAO = new LinkDAO();
-
-        if(linkDAO.getRecentLinksCount(subredditBean.getName()) >= subredditBean.getDailyQuota()){
-            return;
-        }
 
         try {
+            Properties properties = readProperties();
 
-            RSSFeedReader.readFeeds(subredditBean.getName());
-            List<LinkBean> linkBeanList = linkDAO.unpublished(subredditBean.getName());
+            SchedulerFactory sf = new StdSchedulerFactory();
+            Scheduler sched = sf.getScheduler();
+            JobDetail job = newJob(OrchestratorJob.class)
+                    .withIdentity("job1", "group1")
+                    .build();
 
-            RedditSubmitter redditSubmitter = new RedditSubmitter();
+            CronTrigger trigger = newTrigger()
+                    .withIdentity("trigger1", "group1")
+                    .withSchedule(cronSchedule(properties.getProperty("scheduler.cron.expression")))
+                    .build();
 
-            for(LinkBean linkBean : linkBeanList){
-
-                logger.debug("Current linkBean: " + linkBean);
-
-                int recentLinksCount = linkDAO.getRecentLinksCount(subredditBean.getName());
-                if(recentLinksCount >= subredditBean.getDailyQuota()){
-                    logger.info("Reached daily quota for subreddit " + subredditBean.getName());
-                    return;
-                }
-
-                Set<Long> recentFeedsIds = linkDAO.getRecentFeedIds(subredditBean.getName());
-                if(recentFeedsIds.contains(linkBean.getFeedId())){
-                    logger.info("Feed already submitted today, skipping");
-                    continue;
-                }
-
-                try {
-                    redditSubmitter.submitLink(linkBean.getSubreddit(), linkBean.getUrl(), linkBean.getTitle());
-                    linkDAO.setSent(linkBean.getId());
-                    PersistenceProvider.getInstance().shutdown();
-
-                    if(recentLinksCount +1 >= subredditBean.getDailyQuota()){
-                        logger.info("Reached daily quota for subreddit " + subredditBean.getName());
-                        return;
-                    }
-
-                    waitSomeTime();
-                }catch(ApiException ae) {
-                    logger.error(ae.getMessage(), ae);
-                    redditSubmitter = new RedditSubmitter();
-                    waitSomeTime();
-                }catch(NetworkException ne) {
-                    logger.error(ne.getMessage(), ne);
-                    redditSubmitter = new RedditSubmitter();
-                    waitSomeTime();
-                }catch(Exception e){
-                    logger.error(e.getMessage(), e);
-                    waitSomeTime();
-                }
-            }
-
+            sched.scheduleJob(job, trigger);
+            sched.start();
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
+            logger.error(e.getMessage(),e);
         }
     }
 
-    public static void waitSomeTime(){
-        logger.info("Waiting some time...");
-        try {
-            Thread.sleep(10 * 60 * 1000);                 //1000 milliseconds is one second.
-        } catch(InterruptedException ex) {
-            Thread.currentThread().interrupt();
-        }
+    private static Properties readProperties() throws IOException {
+        Properties prop = new Properties();
+        ClassLoader loader = Thread.currentThread().getContextClassLoader();
+        InputStream stream = loader.getResourceAsStream("scheduler.properties");
+        prop.load(stream);
+        return prop;
     }
 
 }

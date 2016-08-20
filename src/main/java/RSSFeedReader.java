@@ -42,7 +42,7 @@ public class RSSFeedReader {
         } catch (Exception e) {
             logger.error(e.getMessage(),e);
         }
-        return null;
+        return feeds;
     }
 
     public static List<LinkBean> readFeeds(String subreddit) {

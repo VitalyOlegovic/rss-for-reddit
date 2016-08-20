@@ -130,13 +130,6 @@ public class PersistenceProvider {
         return null;
     }
 
-    public void commit(){
-        try {
-            conn.commit();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
 
     public static void main(String[] args) {
 
