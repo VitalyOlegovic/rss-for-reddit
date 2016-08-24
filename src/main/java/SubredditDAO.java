@@ -9,7 +9,7 @@ public class SubredditDAO {
     public List<SubredditBean> getSubreddits(){
         List<SubredditBean> list = new ArrayList<SubredditBean>();
         try {
-            ResultSet resultSet = PersistenceProvider.getInstance().query("select * from subreddits order by priority");
+            ResultSet resultSet = PersistenceProvider.getInstance().query("select * from subreddits where enabled=true order by priority");
             while(resultSet.next()){
                 SubredditBean subredditBean = new SubredditBean();
                 subredditBean.setId(resultSet.getLong("id"));

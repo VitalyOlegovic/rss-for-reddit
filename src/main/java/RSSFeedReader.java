@@ -21,7 +21,6 @@ public class RSSFeedReader {
             URL url = new URL(feedBean.getUrl());
             SyndFeedInput input = new SyndFeedInput();
             SyndFeed feed = input.build(new XmlReader(url));
-            logger.debug(feed.toString());
 
             List<SyndEntry> entryList = feed.getEntries();
 
