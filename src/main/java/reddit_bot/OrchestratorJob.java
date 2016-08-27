@@ -1,15 +1,21 @@
+package reddit_bot;
+
+import reddit_bot.bean.LinkBean;
+import reddit_bot.bean.SubredditBean;
+import reddit_bot.jdbc.LinkDAO;
+import reddit_bot.jdbc.PersistenceProvider;
+import reddit_bot.jdbc.SubredditDAO;
 import net.dean.jraw.ApiException;
 import net.dean.jraw.http.NetworkException;
-import org.quartz.Job;
-import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import reddit_bot.rssfeeds.RSSFeedReader;
+import reddit_bot.rssfeeds.RSSService;
 
 import java.util.List;
 import java.util.Set;
 
-public class OrchestratorJob implements Job {
+public class OrchestratorJob{
 
     private final static Logger logger = LoggerFactory.getLogger(OrchestratorJob.class);
 
@@ -19,18 +25,7 @@ public class OrchestratorJob implements Job {
         redditSubmitter = new RedditSubmitter();
     }
 
-    public static void main(String ... args){
-        OrchestratorJob main = new OrchestratorJob();
-        main.submitLinks();
-    }
-
-
-    public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
-        OrchestratorJob main = new OrchestratorJob();
-        main.submitLinks();
-    }
-
-    private void submitLinks(){
+    public void submitLinks(){
         SubredditDAO subredditDAO = new SubredditDAO();
         List<SubredditBean> list = subredditDAO.getSubreddits();
         logger.debug(list.toString());
@@ -40,7 +35,7 @@ public class OrchestratorJob implements Job {
         }
     }
 
-    private void submitLinks(SubredditBean subredditBean){
+    public void submitLinks(SubredditBean subredditBean){
         LinkDAO linkDAO = new LinkDAO();
 
         if(linkDAO.getRecentLinksCount(subredditBean.getName()) >= subredditBean.getDailyQuota()){
@@ -48,7 +43,8 @@ public class OrchestratorJob implements Job {
         }
 
         try {
-            RSSFeedReader.readFeeds(subredditBean.getName());
+            RSSService rssService = new RSSService();
+            rssService.readFeeds(subredditBean.getName());
             List<LinkBean> linkBeanList = linkDAO.unpublished(subredditBean.getName());
 
             for(LinkBean linkBean : linkBeanList){

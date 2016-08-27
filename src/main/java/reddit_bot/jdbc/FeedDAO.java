@@ -1,3 +1,6 @@
+package reddit_bot.jdbc;
+
+import reddit_bot.bean.FeedBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

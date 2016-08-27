@@ -1,3 +1,6 @@
+package reddit_bot.jdbc;
+
+import reddit_bot.bean.LinkBean;
 import org.apache.commons.lang3.time.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -7,7 +10,6 @@ import java.net.URL;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.text.MessageFormat;
 import java.util.*;
 
 public class LinkDAO {

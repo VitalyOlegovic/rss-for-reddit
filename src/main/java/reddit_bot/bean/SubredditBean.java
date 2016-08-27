@@ -1,3 +1,5 @@
+package reddit_bot.bean;
+
 public class SubredditBean {
 
     private long id;
@@ -39,7 +41,7 @@ public class SubredditBean {
 
     @Override
     public String toString() {
-        return "SubredditBean{" +
+        return "reddit_bot.bean.SubredditBean{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", dailyQuota=" + dailyQuota +

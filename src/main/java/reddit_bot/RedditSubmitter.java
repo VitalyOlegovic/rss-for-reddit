@@ -1,3 +1,8 @@
+package reddit_bot;
+
+import reddit_bot.bean.LinkBean;
+import reddit_bot.jdbc.LinkDAO;
+import reddit_bot.jdbc.PersistenceProvider;
 import net.dean.jraw.ApiException;
 import net.dean.jraw.RedditClient;
 import net.dean.jraw.fluent.FluentRedditClient;

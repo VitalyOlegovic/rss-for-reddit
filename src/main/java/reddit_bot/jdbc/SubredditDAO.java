@@ -1,4 +1,7 @@
-import java.sql.PreparedStatement;
+package reddit_bot.jdbc;
+
+import reddit_bot.bean.SubredditBean;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;

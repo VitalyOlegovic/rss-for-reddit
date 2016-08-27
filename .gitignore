@@ -17,3 +17,5 @@ hs_err_pid*
 /db_file.script
 /target/
 /log.out
+/src/main/resources/hibernate.cfg.xml
+/src/main/resources/hibernate.properties

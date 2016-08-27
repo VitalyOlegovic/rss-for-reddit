@@ -1,3 +1,5 @@
+package reddit_bot.jdbc;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,7 +26,7 @@ public class PersistenceProvider {
         try {
             Class.forName("org.hsqldb.jdbcDriver");
 
-            conn = DriverManager.getConnection("jdbc:hsqldb:" + db_file_name_prefix,"sa", "");
+            conn = DriverManager.getConnection("reddit_bot.jdbc:hsqldb:" + db_file_name_prefix,"sa", "");
             //initDb();
         } catch (ClassNotFoundException e) {
             logger.error(e.getMessage(),e);

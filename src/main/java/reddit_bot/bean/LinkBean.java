@@ -1,3 +1,5 @@
+package reddit_bot.bean;
+
 import java.net.URL;
 import java.util.Date;
 
@@ -69,7 +71,7 @@ public class LinkBean {
 
     @Override
     public String toString() {
-        return "LinkBean{" +
+        return "reddit_bot.bean.LinkBean{" +
                 "id=" + id +
                 ", title='" + title + '\'' +
                 ", url=" + url +
