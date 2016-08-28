@@ -1,6 +1,4 @@
 package reddit_bot.entity;
-// Generated 27-ago-2016 1.54.44 by Hibernate Tools 4.3.2-SNAPSHOT
-
 
 import javax.persistence.*;
 
@@ -8,9 +6,16 @@ import javax.persistence.*;
 @Table(name="feed_subreddit")
 public class FeedSubreddit  implements java.io.Serializable {
 
-
+    @EmbeddedId
+    @AttributeOverrides( {
+            @AttributeOverride(name="feedId", column=@Column(name="feed_id", nullable=false) ),
+            @AttributeOverride(name="subredditId", column=@Column(name="subreddit_id", nullable=false) ) } )
     private FeedSubredditId id;
+    @ManyToOne(fetch=FetchType.LAZY)
+    @JoinColumn(name="feed_id", nullable=false, insertable=false, updatable=false)
     private Feed feed;
+    @ManyToOne(fetch=FetchType.LAZY)
+    @JoinColumn(name="subreddit_id", nullable=false, insertable=false, updatable=false)
     private Subreddit subreddit;
 
     public FeedSubreddit() {
@@ -22,12 +27,7 @@ public class FeedSubreddit  implements java.io.Serializable {
         this.subreddit = subreddit;
     }
 
-    @EmbeddedId
 
-
-    @AttributeOverrides( {
-            @AttributeOverride(name="feedId", column=@Column(name="feed_id", nullable=false) ),
-            @AttributeOverride(name="subredditId", column=@Column(name="subreddit_id", nullable=false) ) } )
     public FeedSubredditId getId() {
         return this.id;
     }
@@ -36,8 +36,7 @@ public class FeedSubreddit  implements java.io.Serializable {
         this.id = id;
     }
 
-    @ManyToOne(fetch=FetchType.LAZY)
-    @JoinColumn(name="feed_id", nullable=false, insertable=false, updatable=false)
+
     public Feed getFeed() {
         return this.feed;
     }
@@ -46,8 +45,7 @@ public class FeedSubreddit  implements java.io.Serializable {
         this.feed = feed;
     }
 
-    @ManyToOne(fetch=FetchType.LAZY)
-    @JoinColumn(name="subreddit_id", nullable=false, insertable=false, updatable=false)
+
     public Subreddit getSubreddit() {
         return this.subreddit;
     }

@@ -1,5 +1,6 @@
 package reddit_bot.rssfeeds;
 
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.support.JpaRepositoryFactory;
 import org.springframework.data.repository.core.support.RepositoryFactorySupport;
@@ -25,10 +26,11 @@ import java.util.Set;
 public class RSSService {
 
     @Autowired
-    EntityManager entityManager;
+    LinkRepository linkRepository;
 
     @Autowired
-    LinkRepository linkRepository;
+    SubredditRepository subredditRepository;
+
 
     RSSFeedReader rssFeedReader = new RSSFeedReader();
 
@@ -50,8 +52,6 @@ public class RSSService {
     }
 
     public Iterable<Feed> getFeeds(){
-        RepositoryFactorySupport factory = new JpaRepositoryFactory(entityManager);
-        SubredditRepository subredditRepository = factory.getRepository(SubredditRepository.class);
         Iterable<Subreddit> iterable = subredditRepository.findEnabled();
 
         Set<Feed> feedSet = new HashSet<Feed>();
@@ -72,6 +72,8 @@ public class RSSService {
             for(Link link : linkList) {
                 Iterable<Link> links = linkRepository.findByUrl(link.getUrl());
                 if(! links.iterator().hasNext()) {
+                    String title = StringEscapeUtils.unescapeHtml4(link.getTitle());
+                    link.setTitle(title);
                     linkRepository.save(link);
                 }
             }

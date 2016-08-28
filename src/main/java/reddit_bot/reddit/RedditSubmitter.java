@@ -1,8 +1,5 @@
-package reddit_bot;
+package reddit_bot.reddit;
 
-import reddit_bot.bean.LinkBean;
-import reddit_bot.jdbc.LinkDAO;
-import reddit_bot.jdbc.PersistenceProvider;
 import net.dean.jraw.ApiException;
 import net.dean.jraw.RedditClient;
 import net.dean.jraw.fluent.FluentRedditClient;
@@ -11,16 +8,18 @@ import net.dean.jraw.http.oauth.Credentials;
 import net.dean.jraw.http.oauth.OAuthData;
 import net.dean.jraw.http.oauth.OAuthException;
 import net.dean.jraw.http.oauth.OAuthHelper;
+import net.dean.jraw.models.Submission;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.List;
 import java.util.Properties;
 
+@Service
 public class RedditSubmitter {
 
     private final static Logger logger = LoggerFactory.getLogger(RedditSubmitter.class);
@@ -29,6 +28,10 @@ public class RedditSubmitter {
     private Properties properties;
 
     public RedditSubmitter(){
+        init();
+    }
+
+    private void init(){
         try {
             properties = readProperties();
 
@@ -46,38 +49,13 @@ public class RedditSubmitter {
         }
     }
 
-    public static void main(String... args){
-        LinkDAO linkDAO = null;
-        try {
-            linkDAO = new LinkDAO();
-            List<LinkBean> linkBeanList = linkDAO.unpublished("testitaly");
-            RedditSubmitter redditSubmitter = new RedditSubmitter();
-
-            for(LinkBean linkBean : linkBeanList){
-                redditSubmitter.submitLink("testitaly", linkBean.getUrl(), linkBean.getTitle());
-                linkDAO.setSent(linkBean.getId());
-                waitNineMinutes();
-            }
-
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            PersistenceProvider.getInstance().shutdown();
-        }
-
-    }
-
-    public static void waitNineMinutes(){
-        try {
-            Thread.sleep(10 * 60 * 1000);
-        } catch(InterruptedException ex) {
-            Thread.currentThread().interrupt();
-            PersistenceProvider.getInstance().shutdown();
-        }
-    }
-
     public void submitLink(String subredditName, URL url, String title) throws ApiException, MalformedURLException {
-
-        fluent.subreddit(subredditName).submit(url, title);
+        try {
+            Submission submission = fluent.subreddit(subredditName).submit(url, title);
+        }catch(ApiException ae){
+            init();
+            throw ae;
+        }
     }
 
     private UserAgent buildUserAgent(){

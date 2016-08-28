@@ -1,6 +1,4 @@
 package reddit_bot.entity;
-// Generated 27-ago-2016 1.54.44 by Hibernate Tools 4.3.2-SNAPSHOT
-
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -10,11 +8,19 @@ import java.util.Set;
 @Table(name="subreddits")
 public class Subreddit implements java.io.Serializable {
 
+    @Id
+    @Column(name="id", unique=true, nullable=false)
+    @GeneratedValue(strategy=GenerationType.TABLE)
     private int id;
+    @Column(name="name", length=256)
     private String name;
+    @Column(name="daily_quota")
     private Integer dailyQuota;
+    @Column(name="priority")
     private Integer priority;
+    @Column(name="enabled")
     private Boolean enabled;
+    @OneToMany(fetch=FetchType.LAZY, mappedBy="subreddit")
     private Set<FeedSubreddit> feedSubreddits = new HashSet<FeedSubreddit>(0);
 
     public Subreddit() {
@@ -33,8 +39,7 @@ public class Subreddit implements java.io.Serializable {
         this.feedSubreddits = feedSubreddits;
     }
 
-    @Id
-    @Column(name="id", unique=true, nullable=false)
+
     public int getId() {
         return this.id;
     }
@@ -44,7 +49,7 @@ public class Subreddit implements java.io.Serializable {
     }
 
 
-    @Column(name="name", length=256)
+
     public String getName() {
         return this.name;
     }
@@ -54,7 +59,7 @@ public class Subreddit implements java.io.Serializable {
     }
 
 
-    @Column(name="daily_quota")
+
     public Integer getDailyQuota() {
         return this.dailyQuota;
     }
@@ -64,7 +69,7 @@ public class Subreddit implements java.io.Serializable {
     }
 
 
-    @Column(name="priority")
+
     public Integer getPriority() {
         return this.priority;
     }
@@ -74,7 +79,7 @@ public class Subreddit implements java.io.Serializable {
     }
 
 
-    @Column(name="enabled")
+
     public Boolean getEnabled() {
         return this.enabled;
     }
@@ -83,7 +88,7 @@ public class Subreddit implements java.io.Serializable {
         this.enabled = enabled;
     }
 
-    @OneToMany(fetch=FetchType.LAZY, mappedBy="subreddits")
+
     public Set<FeedSubreddit> getFeedSubreddits() {
         return this.feedSubreddits;
     }

@@ -9,7 +9,7 @@ import net.dean.jraw.ApiException;
 import net.dean.jraw.http.NetworkException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import reddit_bot.rssfeeds.RSSFeedReader;
+import reddit_bot.reddit.RedditSubmitter;
 import reddit_bot.rssfeeds.RSSService;
 
 import java.util.List;

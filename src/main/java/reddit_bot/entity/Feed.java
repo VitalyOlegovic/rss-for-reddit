@@ -1,5 +1,4 @@
 package reddit_bot.entity;
-// Generated 27-ago-2016 1.54.44 by Hibernate Tools 4.3.2-SNAPSHOT
 
 
 import javax.persistence.*;
@@ -10,43 +9,46 @@ import java.util.Set;
 @Table(name="feeds")
 public class Feed implements java.io.Serializable {
 
-
-    private int id;
+    @Id
+    @Column(name="id", unique=true, nullable=false)
+    @GeneratedValue(strategy=GenerationType.TABLE)
+    private long id;
+    @Column(name="url", nullable=false, length=256)
     private String url;
+    @Column(name="parent_feed")
     private Integer parentFeed;
-    private Set<Link> linkses = new HashSet<Link>(0);
+    @OneToMany(fetch=FetchType.LAZY, mappedBy="feed")
+    private Set<Link> links = new HashSet<Link>(0);
+    @OneToMany(fetch=FetchType.LAZY, mappedBy="feed")
     private Set<FeedSubreddit> feedSubreddits = new HashSet<FeedSubreddit>(0);
 
     public Feed() {
     }
 
 
-    public Feed(int id, String url) {
+    public Feed(long id, String url) {
         this.id = id;
         this.url = url;
     }
-    public Feed(int id, String url, Integer parentFeed, Set<Link> linkses, Set<FeedSubreddit> feedSubreddits) {
+    public Feed(long id, String url, Integer parentFeed, Set<Link> links, Set<FeedSubreddit> feedSubreddits) {
         this.id = id;
         this.url = url;
         this.parentFeed = parentFeed;
-        this.linkses = linkses;
+        this.links = links;
         this.feedSubreddits = feedSubreddits;
     }
 
-    @Id
 
-
-    @Column(name="id", unique=true, nullable=false)
-    public int getId() {
+    public long getId() {
         return this.id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
 
-    @Column(name="url", nullable=false, length=256)
+
     public String getUrl() {
         return this.url;
     }
@@ -56,7 +58,7 @@ public class Feed implements java.io.Serializable {
     }
 
 
-    @Column(name="parent_feed")
+
     public Integer getParentFeed() {
         return this.parentFeed;
     }
@@ -65,16 +67,16 @@ public class Feed implements java.io.Serializable {
         this.parentFeed = parentFeed;
     }
 
-    @OneToMany(fetch=FetchType.LAZY, mappedBy="feeds")
-    public Set<Link> getLinkses() {
-        return this.linkses;
+
+    public Set<Link> getLinks() {
+        return this.links;
     }
 
-    public void setLinkses(Set<Link> linkses) {
-        this.linkses = linkses;
+    public void setLinks(Set<Link> links) {
+        this.links = links;
     }
 
-    @OneToMany(fetch=FetchType.LAZY, mappedBy="feeds")
+
     public Set<FeedSubreddit> getFeedSubreddits() {
         return this.feedSubreddits;
     }

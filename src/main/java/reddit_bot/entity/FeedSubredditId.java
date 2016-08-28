@@ -1,6 +1,4 @@
 package reddit_bot.entity;
-// Generated 27-ago-2016 1.54.44 by Hibernate Tools 4.3.2-SNAPSHOT
-
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -11,8 +9,9 @@ import javax.persistence.Embeddable;
 @Embeddable
 public class FeedSubredditId  implements java.io.Serializable {
 
-
+    @Column(name="feed_id", nullable=false)
     private int feedId;
+    @Column(name="subreddit_id", nullable=false)
     private int subredditId;
 
     public FeedSubredditId() {
@@ -25,7 +24,7 @@ public class FeedSubredditId  implements java.io.Serializable {
 
 
 
-    @Column(name="feed_id", nullable=false)
+
     public int getFeedId() {
         return this.feedId;
     }
@@ -35,7 +34,7 @@ public class FeedSubredditId  implements java.io.Serializable {
     }
 
 
-    @Column(name="subreddit_id", nullable=false)
+
     public int getSubredditId() {
         return this.subredditId;
     }

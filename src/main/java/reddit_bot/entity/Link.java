@@ -1,6 +1,4 @@
 package reddit_bot.entity;
-// Generated 27-ago-2016 1.54.44 by Hibernate Tools 4.3.2-SNAPSHOT
-
 
 import javax.persistence.*;
 import java.util.Date;
@@ -14,12 +12,21 @@ import java.util.Set;
 @Table(name="links")
 public class Link implements java.io.Serializable {
 
-
+    @Id
+    @Column(name="id", unique=true, nullable=false)
+    @GeneratedValue(strategy=GenerationType.TABLE)
     private int id;
+    @ManyToOne(fetch=FetchType.LAZY)
+    @JoinColumn(name="feed_id")
     private Feed feed;
+    @Column(name="title", nullable=false, length=256)
     private String title;
+    @Column(name="url", nullable=false, length=512)
     private String url;
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name="publication_date", nullable=false, length=19)
     private Date publicationDate;
+    @OneToMany(fetch=FetchType.LAZY, mappedBy="link")
     private Set<LinkSending> linkSendings = new HashSet<LinkSending>(0);
 
     public Link() {
@@ -41,10 +48,6 @@ public class Link implements java.io.Serializable {
         this.linkSendings = linkSendings;
     }
 
-    @Id
-
-
-    @Column(name="id", unique=true, nullable=false)
     public int getId() {
         return this.id;
     }
@@ -53,8 +56,7 @@ public class Link implements java.io.Serializable {
         this.id = id;
     }
 
-    @ManyToOne(fetch=FetchType.LAZY)
-    @JoinColumn(name="feed_id")
+
     public Feed getFeed() {
         return this.feed;
     }
@@ -64,7 +66,7 @@ public class Link implements java.io.Serializable {
     }
 
 
-    @Column(name="title", nullable=false, length=256)
+
     public String getTitle() {
         return this.title;
     }
@@ -74,7 +76,7 @@ public class Link implements java.io.Serializable {
     }
 
 
-    @Column(name="url", nullable=false, length=512)
+
     public String getUrl() {
         return this.url;
     }
@@ -83,8 +85,7 @@ public class Link implements java.io.Serializable {
         this.url = url;
     }
 
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name="publication_date", nullable=false, length=19)
+
     public Date getPublicationDate() {
         return this.publicationDate;
     }
@@ -93,7 +94,7 @@ public class Link implements java.io.Serializable {
         this.publicationDate = publicationDate;
     }
 
-    @OneToMany(fetch=FetchType.LAZY, mappedBy="links")
+
     public Set<LinkSending> getLinkSendings() {
         return this.linkSendings;
     }
@@ -102,9 +103,17 @@ public class Link implements java.io.Serializable {
         this.linkSendings = linkSendings;
     }
 
-
-
-
+    @Override
+    public String toString() {
+        return "Link{" +
+                "id=" + id +
+                ", feed=" + feed +
+                ", title='" + title + '\'' +
+                ", url='" + url + '\'' +
+                ", publicationDate=" + publicationDate +
+                ", linkSendings=" + linkSendings +
+                '}';
+    }
 }
 
 

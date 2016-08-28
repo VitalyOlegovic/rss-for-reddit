@@ -19,3 +19,4 @@ hs_err_pid*
 /log.out
 /src/main/resources/hibernate.cfg.xml
 /src/main/resources/hibernate.properties
+/db_file.log
