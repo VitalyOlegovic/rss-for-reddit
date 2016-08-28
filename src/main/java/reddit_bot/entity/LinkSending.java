@@ -17,7 +17,7 @@ public class LinkSending  implements java.io.Serializable {
     @JoinColumn(name="link_id")
     private Link link;
     @ManyToOne(fetch=FetchType.LAZY)
-    @JoinColumn(name="subreddit_id", nullable=false, insertable=false, updatable=false)
+    @JoinColumn(name="subreddit_id")
     private Subreddit subreddit;
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name="sending_date", nullable=false, length=19)

@@ -15,7 +15,7 @@ public class Link implements java.io.Serializable {
     @Id
     @Column(name="id", unique=true, nullable=false)
     @GeneratedValue(strategy=GenerationType.TABLE)
-    private int id;
+    private long id;
     @ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name="feed_id")
     private Feed feed;
@@ -33,13 +33,13 @@ public class Link implements java.io.Serializable {
     }
 
 
-    public Link(int id, String title, String url, Date publicationDate) {
+    public Link(long id, String title, String url, Date publicationDate) {
         this.id = id;
         this.title = title;
         this.url = url;
         this.publicationDate = publicationDate;
     }
-    public Link(int id, Feed feed, String title, String url, Date publicationDate, Set<LinkSending> linkSendings) {
+    public Link(long id, Feed feed, String title, String url, Date publicationDate, Set<LinkSending> linkSendings) {
         this.id = id;
         this.feed = feed;
         this.title = title;
@@ -48,7 +48,7 @@ public class Link implements java.io.Serializable {
         this.linkSendings = linkSendings;
     }
 
-    public int getId() {
+    public long getId() {
         return this.id;
     }
 

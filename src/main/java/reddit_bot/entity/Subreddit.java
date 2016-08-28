@@ -11,7 +11,7 @@ public class Subreddit implements java.io.Serializable {
     @Id
     @Column(name="id", unique=true, nullable=false)
     @GeneratedValue(strategy=GenerationType.TABLE)
-    private int id;
+    private long id;
     @Column(name="name", length=256)
     private String name;
     @Column(name="daily_quota")
@@ -27,10 +27,10 @@ public class Subreddit implements java.io.Serializable {
     }
 
 
-    public Subreddit(int id) {
+    public Subreddit(long id) {
         this.id = id;
     }
-    public Subreddit(int id, String name, Integer dailyQuota, Integer priority, Boolean enabled, Set<FeedSubreddit> feedSubreddits) {
+    public Subreddit(long id, String name, Integer dailyQuota, Integer priority, Boolean enabled, Set<FeedSubreddit> feedSubreddits) {
         this.id = id;
         this.name = name;
         this.dailyQuota = dailyQuota;
@@ -40,11 +40,11 @@ public class Subreddit implements java.io.Serializable {
     }
 
 
-    public int getId() {
+    public long getId() {
         return this.id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 

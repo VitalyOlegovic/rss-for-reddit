@@ -1,20 +1,13 @@
 package reddit_bot.reddit;
 
-import net.dean.jraw.ApiException;
-import net.dean.jraw.http.NetworkException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import reddit_bot.OrchestratorJob;
-import reddit_bot.bean.LinkBean;
-import reddit_bot.bean.SubredditBean;
 import reddit_bot.entity.Feed;
 import reddit_bot.entity.Link;
 import reddit_bot.entity.LinkSending;
 import reddit_bot.entity.Subreddit;
-import reddit_bot.jdbc.LinkDAO;
-import reddit_bot.jdbc.PersistenceProvider;
 import reddit_bot.repository.FeedsRepository;
 import reddit_bot.repository.LinkRepository;
 import reddit_bot.repository.LinkSendingRepository;
@@ -26,7 +19,7 @@ import java.util.*;
 @Service
 public class RedditService {
 
-    private final static Logger logger = LoggerFactory.getLogger(OrchestratorJob.class);
+    private final static Logger logger = LoggerFactory.getLogger(RedditService.class);
 
     @Autowired
     LinkRepository linkRepository;
