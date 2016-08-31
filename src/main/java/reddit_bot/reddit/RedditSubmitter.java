@@ -8,6 +8,9 @@ import net.dean.jraw.http.oauth.Credentials;
 import net.dean.jraw.http.oauth.OAuthData;
 import net.dean.jraw.http.oauth.OAuthException;
 import net.dean.jraw.http.oauth.OAuthHelper;
+import net.dean.jraw.managers.AccountManager;
+import net.dean.jraw.managers.ModerationManager;
+import net.dean.jraw.models.FlairTemplate;
 import net.dean.jraw.models.Submission;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,6 +20,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.List;
 import java.util.Properties;
 
 @Service
@@ -26,6 +30,7 @@ public class RedditSubmitter {
 
     private FluentRedditClient fluent;
     private Properties properties;
+    RedditClient redditClient;
 
     public RedditSubmitter(){
         init();
@@ -36,7 +41,7 @@ public class RedditSubmitter {
             properties = readProperties();
 
             UserAgent myUserAgent = buildUserAgent();
-            RedditClient redditClient = new RedditClient(myUserAgent);
+            redditClient = new RedditClient(myUserAgent);
             Credentials credentials = buildCredentials();
             OAuthHelper oAuthHelper = redditClient.getOAuthHelper();
             OAuthData authData = oAuthHelper.easyAuth(credentials);
@@ -52,6 +57,25 @@ public class RedditSubmitter {
     public void submitLink(String subredditName, URL url, String title) throws ApiException, MalformedURLException {
         try {
             Submission submission = fluent.subreddit(subredditName).submit(url, title);
+        }catch(ApiException ae){
+            init();
+            throw ae;
+        }
+    }
+
+    public void submitLink(String subredditName, URL url, String title, String flair) throws ApiException, MalformedURLException {
+        try {
+            Submission submission = fluent.subreddit(subredditName).submit(url, title);
+
+            // FIXME huge refactoring is needed here
+
+            AccountManager accountManager = new AccountManager(redditClient);
+            List<FlairTemplate> flairTemplateList = accountManager.getFlairChoices(subredditName);
+
+            ModerationManager moderationManager = new ModerationManager(redditClient);
+            FlairTemplate flairTemplate = flairTemplateList.get(0);
+            moderationManager.setFlair(subredditName, flairTemplate, flair, submission);
+
         }catch(ApiException ae){
             init();
             throw ae;

@@ -8,8 +8,6 @@ It posts links from each feed at most once per subreddit.
 
 It also has a Quartz scheduler.
 
-WARNING: you have to use this version of JRAW: https://github.com/vitalijzad/JRAW otherwise, it won't compile.
-
 ## Similar projects:
 
 https://github.com/Ferocit/RedditRssBot
