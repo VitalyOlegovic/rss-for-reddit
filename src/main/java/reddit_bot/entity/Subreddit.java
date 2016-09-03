@@ -105,7 +105,6 @@ public class Subreddit implements java.io.Serializable {
                 ", dailyQuota=" + dailyQuota +
                 ", priority=" + priority +
                 ", enabled=" + enabled +
-                ", feedSubreddits=" + feedSubreddits +
                 '}';
     }
 }

@@ -16,7 +16,7 @@ public class Link implements java.io.Serializable {
     @Column(name="id", unique=true, nullable=false)
     @GeneratedValue(strategy=GenerationType.TABLE)
     private long id;
-    @ManyToOne(fetch=FetchType.LAZY)
+    @ManyToOne(fetch=FetchType.EAGER)
     @JoinColumn(name="feed_id")
     private Feed feed;
     @Column(name="title", nullable=false, length=256)
@@ -111,7 +111,6 @@ public class Link implements java.io.Serializable {
                 ", title='" + title + '\'' +
                 ", url='" + url + '\'' +
                 ", publicationDate=" + publicationDate +
-                ", linkSendings=" + linkSendings +
                 '}';
     }
 }

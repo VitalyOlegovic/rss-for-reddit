@@ -20,3 +20,7 @@ hs_err_pid*
 /src/main/resources/hibernate.cfg.xml
 /src/main/resources/hibernate.properties
 /db_file.log
+/.classpath
+/.project
+/.settings/
+/db_file.tmp/

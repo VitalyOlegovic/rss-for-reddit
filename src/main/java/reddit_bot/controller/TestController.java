@@ -3,21 +3,13 @@ package reddit_bot.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import reddit_bot.entity.Link;
-import reddit_bot.entity.LinkSending;
-import reddit_bot.entity.Subreddit;
-import reddit_bot.reddit.RedditService;
+import reddit_bot.reddit.RedditSubmitterService;
 import reddit_bot.repository.LinkRepository;
 import reddit_bot.repository.LinkSendingRepository;
 import reddit_bot.repository.SubredditRepository;
-import reddit_bot.rssfeeds.RSSService;
+import reddit_bot.service.LinkService;
 
 import javax.persistence.EntityManager;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
 
 @Controller
 public class TestController {
@@ -29,10 +21,10 @@ public class TestController {
     LinkRepository linkRepository;
 
     @Autowired
-    RSSService rssService;
+    LinkService linkService;
 
     @Autowired
-    RedditService redditService;
+    RedditSubmitterService redditSubmitterService;
 
     @Autowired
     LinkSendingRepository linkSendingRepository;
@@ -51,7 +43,7 @@ public class TestController {
         Iterable<Link> links = linkRepository.findByFeedIds(longList, "it");
         return links.toString();*/
 
-        redditService.send();
+        redditSubmitterService.send();
 
         /*Link link = linkRepository.findOne(98304L);
         Subreddit subreddit = subredditRepository.findOne(1L);
@@ -64,7 +56,7 @@ public class TestController {
 
     @RequestMapping("/rss")
     String rss(){
-        rssService.updateFeeds();
+        linkService.updateFeeds();
         return "ok";
     }
 

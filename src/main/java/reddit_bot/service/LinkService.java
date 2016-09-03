@@ -1,4 +1,4 @@
-package reddit_bot.rssfeeds;
+package reddit_bot.service;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,8 +13,10 @@ import reddit_bot.entity.Link;
 import reddit_bot.entity.Subreddit;
 import reddit_bot.jdbc.FeedDAO;
 import reddit_bot.jdbc.LinkDAO;
+import reddit_bot.repository.FeedsRepository;
 import reddit_bot.repository.LinkRepository;
 import reddit_bot.repository.SubredditRepository;
+import reddit_bot.rssfeeds.RSSFeedReader;
 
 import javax.persistence.EntityManager;
 import java.util.ArrayList;
@@ -23,7 +25,7 @@ import java.util.List;
 import java.util.Set;
 
 @Service
-public class RSSService {
+public class LinkService {
 
     @Autowired
     LinkRepository linkRepository;
@@ -31,25 +33,11 @@ public class RSSService {
     @Autowired
     SubredditRepository subredditRepository;
 
+    @Autowired
+    FeedsRepository feedsRepository;
 
     RSSFeedReader rssFeedReader = new RSSFeedReader();
 
-    public void readFeeds(String subreddit) {
-        List<LinkBean> list = new ArrayList<LinkBean>();
-        FeedDAO feedDAO = new FeedDAO();
-        List<FeedBean> feedList = feedDAO.getFeeds(subreddit);
-
-        LinkDAO linkDAO = new LinkDAO();
-
-        for(FeedBean feedBean : feedList){
-            List<LinkBean> links = rssFeedReader.readFeeds(feedBean);
-            for(LinkBean l : links){
-                if(!linkDAO.existsByUrlSubreddit(l.getUrl().toExternalForm(),l.getSubreddit())) {
-                    linkDAO.persist(l);
-                }
-            }
-        }
-    }
 
     public Iterable<Feed> getFeeds(){
         Iterable<Subreddit> iterable = subredditRepository.findEnabled();
@@ -57,8 +45,8 @@ public class RSSService {
         Set<Feed> feedSet = new HashSet<Feed>();
 
         for(Subreddit subreddit : iterable){
-            for(FeedSubreddit feedSubreddit : subreddit.getFeedSubreddits() ){
-                feedSet.add(feedSubreddit.getFeed());
+            for(Feed feed : feedsRepository.findBySubreddit(subreddit) ){
+                feedSet.add(feed);
             }
         }
 
