@@ -55,6 +55,23 @@ public class RedditSubmitterService {
         }
     }
 
+    public void submitLink(Subreddit subreddit, Link link, String flair){
+        logger.info("Current linkBean: " + link);
+
+        try {
+            URL url = new URL(link.getUrl());
+            redditSubmitter.submitLink(subreddit.getName(), url, link.getTitle(), flair);
+
+            LinkSending linkSending = new LinkSending(link,subreddit, new Date());
+            linkSendingRepository.save(linkSending);
+
+            waitSomeTime();
+        }catch(Exception e){
+            logger.error(e.getMessage(), e);
+            waitSomeTime();
+        }
+    }
+
     public static void waitSomeTime(){
         logger.info("Waiting some time...");
         try {

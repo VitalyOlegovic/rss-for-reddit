@@ -5,9 +5,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import reddit_bot.entity.Feed;
+import reddit_bot.entity.FeedSubreddit;
 import reddit_bot.entity.Link;
 import reddit_bot.entity.Subreddit;
 import reddit_bot.reddit.RedditSubmitterService;
+import reddit_bot.repository.FeedSubredditRepository;
 import reddit_bot.repository.FeedsRepository;
 import reddit_bot.repository.LinkRepository;
 
@@ -32,10 +34,13 @@ public class SubredditService {
     @Autowired
     RedditSubmitterService redditSubmitterService;
 
+    @Autowired
+    FeedSubredditRepository feedSubredditRepository;
+
     public synchronized void sendLinks(Subreddit subreddit){
         Set<Long> feedsSoFar = linkSendingService.feedsSentRecently(subreddit);
 
-        Iterable<Link> links = findLinksToSend(subreddit);
+        Iterable<Link> links = findLinksToSend(subreddit, feedsSoFar);
 
         int sentSoFar = linkSendingService.linksSentRecently(subreddit);
         logger.info(String.format("%s links sent so far for subreddit %s", sentSoFar, subreddit.getName()));
@@ -55,7 +60,9 @@ public class SubredditService {
 
             if(sentSoFar < subreddit.getDailyQuota()) {
                 feedsSoFar.add(link.getFeed().getId());
-                redditSubmitterService.submitLink(subreddit, link);
+
+                FeedSubreddit feedSubreddit = feedSubredditRepository.getFeedSubreddit(subreddit, link.getFeed());
+                redditSubmitterService.submitLink(subreddit, link, feedSubreddit.getFlair());
                 sentSoFar++;
             }else{
                 break;
@@ -63,11 +70,13 @@ public class SubredditService {
         }
     }
 
-    public Iterable<Link> findLinksToSend(Subreddit subreddit){
+    public Iterable<Link> findLinksToSend(Subreddit subreddit, Set<Long> feedsSoFar){
         Iterable<Feed> feeds = feedsRepository.findBySubreddit(subreddit);
         List<Long> ids = new ArrayList<Long>();
         for(Feed feed : feeds){
-            ids.add(feed.getId());
+            if(!feedsSoFar.contains(feed.getId())) {
+                ids.add(feed.getId());
+            }
         }
 
         if(ids.size() == 0){

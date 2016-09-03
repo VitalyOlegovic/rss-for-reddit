@@ -13,13 +13,13 @@ public class Feed implements java.io.Serializable {
     @Column(name="id", unique=true, nullable=false)
     @GeneratedValue(strategy=GenerationType.TABLE)
     private long id;
-    @Column(name="url", nullable=false, length=256)
+    @Column(name="url", nullable=false)
     private String url;
     @Column(name="parent_feed")
     private Integer parentFeed;
     @OneToMany(fetch=FetchType.LAZY, mappedBy="feed")
     private Set<Link> links = new HashSet<Link>(0);
-    @OneToMany(fetch=FetchType.LAZY, mappedBy="feed")
+    @OneToMany(fetch=FetchType.EAGER, mappedBy="feed")
     private Set<FeedSubreddit> feedSubreddits = new HashSet<FeedSubreddit>(0);
 
     public Feed() {

@@ -12,6 +12,7 @@ import net.dean.jraw.managers.AccountManager;
 import net.dean.jraw.managers.ModerationManager;
 import net.dean.jraw.models.FlairTemplate;
 import net.dean.jraw.models.Submission;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -67,18 +68,33 @@ public class RedditSubmitter {
         try {
             Submission submission = fluent.subreddit(subredditName).submit(url, title);
 
-            // FIXME huge refactoring is needed here
-
-            AccountManager accountManager = new AccountManager(redditClient);
-            List<FlairTemplate> flairTemplateList = accountManager.getFlairChoices(subredditName);
-
-            ModerationManager moderationManager = new ModerationManager(redditClient);
-            FlairTemplate flairTemplate = flairTemplateList.get(0);
-            moderationManager.setFlair(subredditName, flairTemplate, flair, submission);
+            if(StringUtils.isNotBlank(flair)) {
+                submitFlair(subredditName, submission, flair);
+            }
 
         }catch(ApiException ae){
             init();
             throw ae;
+        }
+    }
+
+    private void submitFlair(String subredditName, Submission submission, String flair) throws ApiException {
+        AccountManager accountManager = new AccountManager(redditClient);
+        List<FlairTemplate> flairTemplateList = accountManager.getFlairChoices(submission);
+
+        ModerationManager moderationManager = new ModerationManager(redditClient);
+
+        FlairTemplate flairTemplate = null;
+
+        for (FlairTemplate ft : flairTemplateList) {
+            if (ft.getText().equalsIgnoreCase(flair)) {
+                logger.info("Flair found");
+                flairTemplate = ft;
+            }
+        }
+
+        if (flairTemplate != null) {
+            moderationManager.setFlair(subredditName, flairTemplate, flair, submission);
         }
     }
 

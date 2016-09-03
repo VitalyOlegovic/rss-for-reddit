@@ -18,6 +18,9 @@ public class FeedSubreddit  implements java.io.Serializable {
     @JoinColumn(name="subreddit_id", nullable=false, insertable=false, updatable=false)
     private Subreddit subreddit;
 
+    @Column(name="flair")
+    private String flair;
+
     public FeedSubreddit() {
     }
 
@@ -55,8 +58,13 @@ public class FeedSubreddit  implements java.io.Serializable {
     }
 
 
+    public String getFlair() {
+        return flair;
+    }
 
-
+    public void setFlair(String flair) {
+        this.flair = flair;
+    }
 }
 
 

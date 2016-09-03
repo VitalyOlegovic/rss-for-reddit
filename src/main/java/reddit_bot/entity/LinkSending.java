@@ -20,7 +20,7 @@ public class LinkSending  implements java.io.Serializable {
     @JoinColumn(name="subreddit_id")
     private Subreddit subreddit;
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name="sending_date", nullable=false, length=19)
+    @Column(name="sending_date", nullable=false)
     private Date sendingDate;
 
     public LinkSending() {

@@ -7,6 +7,9 @@ import reddit_bot.AbstractTest;
 import reddit_bot.entity.Link;
 import reddit_bot.entity.Subreddit;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public class SubredditServiceTest extends AbstractTest {
 
     private final static Logger logger = LoggerFactory.getLogger(SubredditServiceTest.class);
@@ -22,7 +25,8 @@ public class SubredditServiceTest extends AbstractTest {
     @Test
     public void findLinksToSend(){
         Subreddit subreddit = getTestSubreddit();
-        Iterable<Link> linkIterable = subredditService.findLinksToSend(subreddit);
+        Set<Long> feedsSoFar = new HashSet<Long>();
+        Iterable<Link> linkIterable = subredditService.findLinksToSend(subreddit, feedsSoFar);
         for(Link link : linkIterable){
             logger.info(link.toString());
         }

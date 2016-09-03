@@ -12,7 +12,7 @@ public class Subreddit implements java.io.Serializable {
     @Column(name="id", unique=true, nullable=false)
     @GeneratedValue(strategy=GenerationType.TABLE)
     private long id;
-    @Column(name="name", length=256)
+    @Column(name="name")
     private String name;
     @Column(name="daily_quota")
     private Integer dailyQuota;
