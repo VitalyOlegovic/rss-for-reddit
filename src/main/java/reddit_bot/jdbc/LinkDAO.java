@@ -46,6 +46,36 @@ public class LinkDAO {
         return linkBeanList;
     }
 
+    public List<LinkBean> published(String subreddit){
+        List<LinkBean> linkBeanList = new ArrayList<LinkBean>();
+        try {
+
+            PreparedStatement preparedStatement = PersistenceProvider.getInstance().prepareStatement(
+                    "select * from links where subreddit = ? and sent_reddit_date is not null order by publication_date desc");
+            preparedStatement.setString(1, subreddit);
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while(resultSet.next()) {
+                LinkBean linkBean = new LinkBean();
+                try {
+                    linkBean.setId(resultSet.getLong("id"));
+                    linkBean.setTitle( resultSet.getString("title") );
+                    linkBean.setUrl(new URL(resultSet.getString("url")));
+                    linkBean.setSubreddit(resultSet.getString("subreddit"));
+                    linkBean.setFeedId(resultSet.getLong("feed_id"));
+
+                    linkBeanList.add(linkBean);
+                } catch (MalformedURLException e) {
+                    logger.error(e.getMessage(),e);
+                }
+            }
+        } catch (SQLException e) {
+            logger.error(e.getMessage(),e);
+        }
+
+        return linkBeanList;
+    }
+
     public void persist(LinkBean linkBean){
 
         logger.debug(linkBean.toString());

@@ -1,6 +1,8 @@
 package reddit_bot.service;
 
 import org.apache.commons.lang3.StringEscapeUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.support.JpaRepositoryFactory;
 import org.springframework.data.repository.core.support.RepositoryFactorySupport;
@@ -27,6 +29,8 @@ import java.util.Set;
 @Service
 public class LinkService {
 
+    private final static Logger logger = LoggerFactory.getLogger(LinkService.class);
+
     @Autowired
     LinkRepository linkRepository;
 
@@ -45,6 +49,7 @@ public class LinkService {
         Set<Feed> feedSet = new HashSet<Feed>();
 
         for(Subreddit subreddit : iterable){
+            logger.info("Current subreddit: " + subreddit.toString());
             for(Feed feed : feedsRepository.findBySubreddit(subreddit) ){
                 feedSet.add(feed);
             }

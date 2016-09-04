@@ -58,9 +58,9 @@ public class RedditSubmitter {
     public void submitLink(String subredditName, URL url, String title) throws ApiException, MalformedURLException {
         try {
             Submission submission = fluent.subreddit(subredditName).submit(url, title);
-        }catch(ApiException ae){
+        }catch(Exception ae){
+            logger.error(ae.getMessage(), ae);
             init();
-            throw ae;
         }
     }
 
@@ -72,9 +72,9 @@ public class RedditSubmitter {
                 submitFlair(subredditName, submission, flair);
             }
 
-        }catch(ApiException ae){
+        }catch(Exception ae){
+            logger.error(ae.getMessage(), ae);
             init();
-            throw ae;
         }
     }
 

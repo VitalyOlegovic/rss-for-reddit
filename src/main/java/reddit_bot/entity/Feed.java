@@ -86,8 +86,14 @@ public class Feed implements java.io.Serializable {
     }
 
 
-
-
+    @Override
+    public String toString() {
+        return "Feed{" +
+                "id=" + id +
+                ", url='" + url + '\'' +
+                ", parentFeed=" + parentFeed +
+                '}';
+    }
 }
 
 
