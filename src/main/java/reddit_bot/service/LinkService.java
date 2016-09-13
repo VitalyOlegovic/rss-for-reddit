@@ -50,7 +50,7 @@ public class LinkService {
 
         for(Subreddit subreddit : iterable){
             logger.info("Current subreddit: " + subreddit.toString());
-            for(Feed feed : feedsRepository.findBySubreddit(subreddit) ){
+             for(Feed feed : feedsRepository.findBySubreddit(subreddit) ){
                 feedSet.add(feed);
             }
         }

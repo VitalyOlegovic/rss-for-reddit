@@ -83,7 +83,7 @@ public class SubredditService {
             return new ArrayList<Link>();
         }
 
-        return linkRepository.findByFeedIds(ids);
+        return linkRepository.findByFeedIds(ids, subreddit);
     }
 
 }

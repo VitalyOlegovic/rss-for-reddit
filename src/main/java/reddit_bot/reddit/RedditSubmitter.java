@@ -3,6 +3,7 @@ package reddit_bot.reddit;
 import net.dean.jraw.ApiException;
 import net.dean.jraw.RedditClient;
 import net.dean.jraw.fluent.FluentRedditClient;
+import net.dean.jraw.http.NetworkException;
 import net.dean.jraw.http.UserAgent;
 import net.dean.jraw.http.oauth.Credentials;
 import net.dean.jraw.http.oauth.OAuthData;
@@ -72,8 +73,8 @@ public class RedditSubmitter {
                 submitFlair(subredditName, submission, flair);
             }
 
-        }catch(Exception ae){
-            logger.error(ae.getMessage(), ae);
+        }catch(NetworkException ne){
+            logger.error(ne.getMessage(), ne);
             init();
         }
     }

@@ -3,6 +3,7 @@ package reddit_bot.reddit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import reddit_bot.entity.Link;
 import reddit_bot.entity.LinkSending;
@@ -15,6 +16,7 @@ import java.net.URL;
 import java.util.Date;
 
 @Service
+@Scope("singleton")
 public class RedditSubmitterService {
 
     private final static Logger logger = LoggerFactory.getLogger(RedditSubmitterService.class);
