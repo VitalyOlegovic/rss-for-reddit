@@ -25,17 +25,12 @@ public class ScheduledTasks {
 
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
 
-    @Scheduled(cron = "0 4 21 1/1 * ?")
-    public void reportCurrentTime() {
-        log.info("The time is now {}", dateFormat.format(new Date()));
-    }
-
-    @Scheduled(cron = "0 53 17 1/1 * ?")
+    @Scheduled(cron = "0 45 6 1/1 * ?")
     public void updateFeeds(){
         linkService.updateFeeds();
     }
 
-    @Scheduled(cron = "0 55 17 1/1 * ?")
+    @Scheduled(cron = "0 0 7 1/1 * ?")
     public void send(){
         redditSubmitterService.send();
     }

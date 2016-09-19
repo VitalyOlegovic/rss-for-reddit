@@ -6,7 +6,7 @@ It does not flood, because you can configure the number of links to post daily f
 
 It posts links from each feed at most once per subreddit.
 
-It also has a Quartz scheduler.
+It has a Spring Boot scheduler.
 
 ## Similar projects:
 

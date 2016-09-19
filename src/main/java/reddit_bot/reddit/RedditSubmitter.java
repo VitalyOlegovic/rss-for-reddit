@@ -58,24 +58,29 @@ public class RedditSubmitter {
 
     public void submitLink(String subredditName, URL url, String title) throws ApiException, MalformedURLException {
         try {
-            Submission submission = fluent.subreddit(subredditName).submit(url, title);
-        }catch(Exception ae){
+            fluent.subreddit(subredditName).submit(url, title);
+        }catch(NetworkException ae){
             logger.error(ae.getMessage(), ae);
             init();
+            fluent.subreddit(subredditName).submit(url, title);
         }
     }
 
     public void submitLink(String subredditName, URL url, String title, String flair) throws ApiException, MalformedURLException {
         try {
-            Submission submission = fluent.subreddit(subredditName).submit(url, title);
-
-            if(StringUtils.isNotBlank(flair)) {
-                submitFlair(subredditName, submission, flair);
-            }
-
+            submitLinkInternal(subredditName, url, title, flair);
         }catch(NetworkException ne){
             logger.error(ne.getMessage(), ne);
             init();
+            submitLinkInternal(subredditName, url, title, flair);
+        }
+    }
+
+    private void submitLinkInternal(String subredditName, URL url, String title, String flair) throws NetworkException, ApiException {
+        Submission submission = fluent.subreddit(subredditName).submit(url, title);
+
+        if(StringUtils.isNotBlank(flair)) {
+            submitFlair(subredditName, submission, flair);
         }
     }
 
