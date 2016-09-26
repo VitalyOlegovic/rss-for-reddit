@@ -24,4 +24,8 @@ public abstract class AbstractTest {
     public static Subreddit getTestSubreddit(){
         return subredditRepository.findOne(5L);
     }
+
+    public static Subreddit getBooksSubreddit(){
+        return subredditRepository.findOne(1L);
+    }
 }

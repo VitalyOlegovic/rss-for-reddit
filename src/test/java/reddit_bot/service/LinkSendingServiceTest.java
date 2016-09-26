@@ -28,4 +28,11 @@ public class LinkSendingServiceTest extends AbstractTest {
         logger.info("Feeds sent recently: " + longSet.toString());
     }
 
+    @Test
+    public void feedsBooksSentRecently(){
+        Subreddit subreddit = getBooksSubreddit();
+        Set<Long> longSet = linkSendingService.feedsSentRecently(subreddit);
+        logger.info("Feeds sent recently: " + longSet.toString());
+    }
+
 }

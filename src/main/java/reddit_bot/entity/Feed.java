@@ -15,8 +15,6 @@ public class Feed implements java.io.Serializable {
     private long id;
     @Column(name="url", nullable=false)
     private String url;
-    @Column(name="parent_feed")
-    private Integer parentFeed;
     @OneToMany(fetch=FetchType.LAZY, mappedBy="feed")
     private Set<Link> links = new HashSet<Link>(0);
     @OneToMany(fetch=FetchType.EAGER, mappedBy="feed")
@@ -33,7 +31,6 @@ public class Feed implements java.io.Serializable {
     public Feed(long id, String url, Integer parentFeed, Set<Link> links, Set<FeedSubreddit> feedSubreddits) {
         this.id = id;
         this.url = url;
-        this.parentFeed = parentFeed;
         this.links = links;
         this.feedSubreddits = feedSubreddits;
     }
@@ -56,17 +53,6 @@ public class Feed implements java.io.Serializable {
     public void setUrl(String url) {
         this.url = url;
     }
-
-
-
-    public Integer getParentFeed() {
-        return this.parentFeed;
-    }
-
-    public void setParentFeed(Integer parentFeed) {
-        this.parentFeed = parentFeed;
-    }
-
 
     public Set<Link> getLinks() {
         return this.links;
@@ -91,7 +77,6 @@ public class Feed implements java.io.Serializable {
         return "Feed{" +
                 "id=" + id +
                 ", url='" + url + '\'' +
-                ", parentFeed=" + parentFeed +
                 '}';
     }
 }

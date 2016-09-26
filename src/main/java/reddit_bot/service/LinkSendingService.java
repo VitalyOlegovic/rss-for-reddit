@@ -10,6 +10,7 @@ import reddit_bot.repository.LinkSendingRepository;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.Set;
 
 @Service
@@ -27,7 +28,19 @@ public class LinkSendingService {
 
     public Set<Long> feedsSentRecently(Subreddit subreddit){
         Date date = DateUtils.truncate(new Date(), Calendar.DATE);
-        return linkSendingRepository.feedsSentAfter(subreddit, date);
+        Calendar calendar = new GregorianCalendar();
+
+        Integer feedsWindow = subreddit.getRecentFeedsWindow();
+        if(feedsWindow != null && feedsWindow > 0) {
+            calendar.add(Calendar.DATE, -1 * subreddit.getRecentFeedsWindow());
+        }
+
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+
+        return linkSendingRepository.feedsSentAfter(subreddit, calendar.getTime());
     }
 
 }

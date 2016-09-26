@@ -22,6 +22,8 @@ public class Subreddit implements java.io.Serializable {
     private Boolean enabled;
     @OneToMany(fetch=FetchType.LAZY, mappedBy="subreddit")
     private Set<FeedSubreddit> feedSubreddits = new HashSet<FeedSubreddit>(0);
+    @Column(name="recent_feeds_window")
+    private Integer recentFeedsWindow;
 
     public Subreddit() {
     }
@@ -95,6 +97,14 @@ public class Subreddit implements java.io.Serializable {
 
     public void setFeedSubreddits(Set<FeedSubreddit> feedSubreddits) {
         this.feedSubreddits = feedSubreddits;
+    }
+
+    public Integer getRecentFeedsWindow() {
+        return recentFeedsWindow;
+    }
+
+    public void setRecentFeedsWindow(Integer recentFeedsWindow) {
+        this.recentFeedsWindow = recentFeedsWindow;
     }
 
     @Override
