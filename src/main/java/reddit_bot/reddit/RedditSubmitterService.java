@@ -50,7 +50,9 @@ public class RedditSubmitterService {
             LinkSending linkSending = new LinkSending(link,subreddit, new Date());
             linkSendingRepository.save(linkSending);
 
-            waitSomeTime();
+            if(!subreddit.getModerator()) {
+                waitSomeTime();
+            }
         }catch(Exception e){
             logger.error(e.getMessage(), e);
             waitSomeTime();
@@ -67,7 +69,9 @@ public class RedditSubmitterService {
             LinkSending linkSending = new LinkSending(link,subreddit, new Date());
             linkSendingRepository.save(linkSending);
 
-            waitSomeTime();
+            if(!subreddit.getModerator()) {
+                waitSomeTime();
+            }
         }catch(Exception e){
             logger.error(e.getMessage(), e);
             waitSomeTime();

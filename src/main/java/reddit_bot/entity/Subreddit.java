@@ -24,6 +24,8 @@ public class Subreddit implements java.io.Serializable {
     private Set<FeedSubreddit> feedSubreddits = new HashSet<FeedSubreddit>(0);
     @Column(name="recent_feeds_window")
     private Integer recentFeedsWindow;
+    @Column(name="moderator")
+    private Boolean moderator;
 
     public Subreddit() {
     }
@@ -107,6 +109,14 @@ public class Subreddit implements java.io.Serializable {
         this.recentFeedsWindow = recentFeedsWindow;
     }
 
+    public Boolean getModerator() {
+        return moderator;
+    }
+
+    public void setModerator(Boolean moderator) {
+        this.moderator = moderator;
+    }
+
     @Override
     public String toString() {
         return "Subreddit{" +
@@ -115,6 +125,9 @@ public class Subreddit implements java.io.Serializable {
                 ", dailyQuota=" + dailyQuota +
                 ", priority=" + priority +
                 ", enabled=" + enabled +
+                ", feedSubreddits=" + feedSubreddits +
+                ", recentFeedsWindow=" + recentFeedsWindow +
+                ", moderator=" + moderator +
                 '}';
     }
 }
