@@ -3,13 +3,17 @@ package reddit_bot.reddit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.SpringApplication;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
+import reddit_bot.SpringBootStart;
 import reddit_bot.entity.Link;
 import reddit_bot.entity.LinkSending;
 import reddit_bot.entity.Subreddit;
 import reddit_bot.repository.LinkSendingRepository;
 import reddit_bot.repository.SubredditRepository;
+import reddit_bot.service.LinkService;
 import reddit_bot.service.SubredditService;
 
 import java.net.URL;
@@ -85,6 +89,12 @@ public class RedditSubmitterService {
         } catch(InterruptedException ex) {
             Thread.currentThread().interrupt();
         }
+    }
+
+    public static void main(String ... args){
+        ConfigurableApplicationContext ctx = SpringApplication.run(SpringBootStart.class, args);
+        RedditSubmitterService redditSubmitterService = ctx.getBean(RedditSubmitterService.class);
+        redditSubmitterService.send();
     }
 
 }

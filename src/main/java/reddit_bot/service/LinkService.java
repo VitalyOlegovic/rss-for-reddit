@@ -4,7 +4,10 @@ import org.apache.commons.lang3.StringEscapeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.SpringApplication;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.stereotype.Service;
+import reddit_bot.SpringBootStart;
 import reddit_bot.entity.Feed;
 import reddit_bot.entity.Link;
 import reddit_bot.entity.Subreddit;
@@ -62,6 +65,12 @@ public class LinkService {
                 }
             }
         }
+    }
+
+    public static void main(String ... args){
+        ConfigurableApplicationContext ctx = SpringApplication.run(SpringBootStart.class, args);
+        LinkService linkService = ctx.getBean(LinkService.class);
+        linkService.updateFeeds();
     }
 
 }

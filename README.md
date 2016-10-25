@@ -6,7 +6,7 @@ It does not flood, because you can configure the number of links to post daily f
 
 It posts links from each feed at most once per subreddit.
 
-It has a Spring Boot scheduler.
+It has a Spring Boot scheduler. To use crontab, see: https://www.raspberrypi.org/documentation/linux/usage/cron.md
 
 ## Similar projects:
 
