@@ -21,9 +21,9 @@ public class LinkSendingService {
     @Autowired
     LinkSendingRepository linkSendingRepository;
 
-    public int linksSentRecently(Subreddit subreddit){
+    public int countLinksSentRecently(Subreddit subreddit){
         Date date = DateUtils.truncate(new Date(), Calendar.DATE);
-        return linkSendingRepository.linksSentAfter(subreddit, date);
+        return linkSendingRepository.countLinksSentAfter(subreddit, date);
     }
 
     public Set<Long> feedsSentRecently(Subreddit subreddit){
@@ -41,6 +41,11 @@ public class LinkSendingService {
         calendar.set(Calendar.MILLISECOND, 0);
 
         return linkSendingRepository.feedsSentAfter(subreddit, calendar.getTime());
+    }
+
+    public Set<Long> feedsSentToday(Subreddit subreddit){
+        Date date = DateUtils.truncate(new Date(), Calendar.DATE);
+        return linkSendingRepository.feedsSentAfter(subreddit, date);
     }
 
 }

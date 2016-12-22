@@ -12,12 +12,17 @@ import java.util.Set;
 public interface LinkSendingRepository extends CrudRepository<LinkSending, Long> {
 
     @Query("select count(1) from LinkSending ls where ls.subreddit = :subreddit and sendingDate >= :sinceWhen")
-    int linksSentAfter(
+    int countLinksSentAfter(
             @Param("subreddit") Subreddit subreddit,
             @Param("sinceWhen") Date sinceWhen);
 
     @Query("select distinct l.feed.id from LinkSending ls join ls.link l where ls.subreddit = :subreddit and ls.sendingDate >= :sinceWhen")
     Set<Long> feedsSentAfter(
+            @Param("subreddit") Subreddit subreddit,
+            @Param("sinceWhen") Date sinceWhen);
+
+    @Query("select distinct l.id from LinkSending ls join ls.link l where ls.subreddit = :subreddit and ls.sendingDate >= :sinceWhen")
+    Set<Long> linksSentAfter(
             @Param("subreddit") Subreddit subreddit,
             @Param("sinceWhen") Date sinceWhen);
 }

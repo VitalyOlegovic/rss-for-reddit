@@ -17,7 +17,7 @@ public class LinkSendingServiceTest extends AbstractTest {
     @Test
     public void linksSentRecently(){
         Subreddit subreddit = getTestSubreddit();
-        int i = linkSendingService.linksSentRecently(subreddit);
+        int i = linkSendingService.countLinksSentRecently(subreddit);
         logger.info("Number of links sent recently: " + i);
     }
 

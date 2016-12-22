@@ -7,10 +7,6 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import reddit_bot.reddit.RedditSubmitterService;
 import reddit_bot.service.LinkService;
-import reddit_bot.service.SubredditService;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 @Component
 public class ScheduledTasks {
@@ -22,8 +18,6 @@ public class ScheduledTasks {
     RedditSubmitterService redditSubmitterService;
 
     private static final Logger log = LoggerFactory.getLogger(ScheduledTasks.class);
-
-    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
 
     @Scheduled(cron = "0 45 6 1/1 * ?")
     public void updateFeeds(){

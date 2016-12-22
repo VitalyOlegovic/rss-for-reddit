@@ -42,7 +42,7 @@ public class SubredditService {
 
         Iterable<Link> links = findLinksToSend(subreddit, feedsSoFar);
 
-        int sentSoFar = linkSendingService.linksSentRecently(subreddit);
+        int sentSoFar = linkSendingService.countLinksSentRecently(subreddit);
         logger.info(String.format("%s links sent so far for subreddit %s", sentSoFar, subreddit.getName()));
 
         if(sentSoFar >= subreddit.getDailyQuota()){
