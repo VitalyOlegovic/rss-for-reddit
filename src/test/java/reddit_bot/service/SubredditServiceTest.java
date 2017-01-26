@@ -1,5 +1,6 @@
 package reddit_bot.service;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,12 +18,14 @@ public class SubredditServiceTest extends AbstractTest {
     SubredditService subredditService = configurableApplicationContext.getBean(SubredditService.class);
 
     @Test
+    @Ignore
     public void sendLinks(){
         Subreddit subreddit = getTestSubreddit();
         subredditService.sendLinks(subreddit);
     }
 
     @Test
+    @Ignore
     public void findLinksToSend(){
         Subreddit subreddit = getTestSubreddit();
         Set<Long> feedsSoFar = new HashSet<Long>();

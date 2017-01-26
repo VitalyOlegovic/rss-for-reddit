@@ -1,5 +1,6 @@
 package reddit_bot.service;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,6 +16,7 @@ public class LinkSendingServiceTest extends AbstractTest {
     LinkSendingService linkSendingService = configurableApplicationContext.getBean(LinkSendingService.class);
 
     @Test
+    @Ignore
     public void linksSentRecently(){
         Subreddit subreddit = getTestSubreddit();
         int i = linkSendingService.countLinksSentRecently(subreddit);
@@ -22,6 +24,7 @@ public class LinkSendingServiceTest extends AbstractTest {
     }
 
     @Test
+    @Ignore
     public void feedsSentRecently(){
         Subreddit subreddit = getTestSubreddit();
         Set<Long> longSet = linkSendingService.feedsSentRecently(subreddit);
@@ -29,6 +32,7 @@ public class LinkSendingServiceTest extends AbstractTest {
     }
 
     @Test
+    @Ignore
     public void feedsBooksSentRecently(){
         Subreddit subreddit = getBooksSubreddit();
         Set<Long> longSet = linkSendingService.feedsSentRecently(subreddit);

@@ -36,6 +36,13 @@ public class FacebookSubmitterService {
     @Autowired
     LinkRepository linkRepository;
 
+    private String NOTIZIE_CULTURALI = "241098196319795";
+    private Long ITALIA_SUBREDDIT_ID = 2L;
+
+    public void submit() {
+        submitFromSubreddit(ITALIA_SUBREDDIT_ID, NOTIZIE_CULTURALI);
+    }
+
     public void submitPostToGroup(String groupId, FacebookPost facebookPost){
         Facebook facebook = new FacebookFactory().getInstance();
         try {

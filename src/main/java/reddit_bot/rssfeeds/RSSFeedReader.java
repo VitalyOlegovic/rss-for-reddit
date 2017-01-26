@@ -55,8 +55,10 @@ public class RSSFeedReader {
     public List<Link> readFeedItems(Feed feed){
         List<Link> feeds = new ArrayList<Link>();
 
+        URL url = null;
+
         try {
-            URL url = new URL(feed.getUrl());
+            url = new URL(feed.getUrl());
             SyndFeedInput input = new SyndFeedInput();
             SyndFeed syndFeed = input.build(new XmlReader(url));
 
@@ -74,7 +76,7 @@ public class RSSFeedReader {
             }
             return feeds;
         } catch (Exception e) {
-            logger.error(e.getMessage(),e);
+            logger.error( "URL: " + url + " message: " + e.getMessage(),e);
         }
         return feeds;
     }
