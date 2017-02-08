@@ -1,5 +1,7 @@
 package reddit_bot.reddit;
 
+import org.jsoup.Connection;
+import org.jsoup.Jsoup;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +18,7 @@ import reddit_bot.repository.SubredditRepository;
 import reddit_bot.service.LinkService;
 import reddit_bot.service.SubredditService;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.Date;
 
@@ -67,6 +70,8 @@ public class RedditSubmitterService {
         logger.info("Current linkBean: " + link);
 
         try {
+            link = removeRedirects(link);
+
             URL url = new URL(link.getUrl());
             redditSubmitter.submitLink(subreddit.getName(), url, link.getTitle(), flair);
 
@@ -80,6 +85,12 @@ public class RedditSubmitterService {
             logger.error(e.getMessage(), e);
             waitSomeTime();
         }
+    }
+
+    private Link removeRedirects(Link link) throws IOException {
+        Connection.Response response = Jsoup.connect(link.getUrl()).execute();
+        link.setUrl(response.url().toString());
+        return link;
     }
 
     public static void waitSomeTime(){
