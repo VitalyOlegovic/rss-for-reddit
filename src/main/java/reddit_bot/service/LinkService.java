@@ -54,17 +54,17 @@ public class LinkService {
 
     public void updateFeeds(){
         Iterable<Feed> feeds = getFeeds();
-        for(Feed feed : feeds){
+        feeds.forEach((feed -> {
             List<Link> linkList = rssFeedReader.readFeedItems(feed);
-            for(Link link : linkList) {
+            linkList.forEach((link -> {
                 Iterable<Link> links = linkRepository.findByUrl(link.getUrl());
                 if(! links.iterator().hasNext()) {
                     String title = StringEscapeUtils.unescapeHtml4(link.getTitle());
                     link.setTitle(title);
                     linkRepository.save(link);
                 }
-            }
-        }
+            }));
+        }));
     }
 
     public static void main(String ... args){
