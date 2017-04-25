@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import reddit_bot.dto.SubredditDTO;
 import reddit_bot.entity.Feed;
 import reddit_bot.entity.FeedSubreddit;
 import reddit_bot.entity.Link;
@@ -12,6 +13,7 @@ import reddit_bot.reddit.RedditSubmitterService;
 import reddit_bot.repository.FeedSubredditRepository;
 import reddit_bot.repository.FeedsRepository;
 import reddit_bot.repository.LinkRepository;
+import reddit_bot.repository.SubredditRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +38,9 @@ public class SubredditService {
 
     @Autowired
     FeedSubredditRepository feedSubredditRepository;
+
+    @Autowired
+    SubredditRepository subredditRepository;
 
     public synchronized void sendLinks(Subreddit subreddit){
         Set<Long> feedsSoFar = linkSendingService.feedsSentRecently(subreddit);
@@ -84,6 +89,15 @@ public class SubredditService {
         }
 
         return linkRepository.findByFeedIds(ids, subreddit);
+    }
+
+    public Iterable<SubredditDTO> subreddits(){
+        List<SubredditDTO> dtos = new ArrayList<>();
+        for(Subreddit subreddit : subredditRepository.findAll()){
+            SubredditDTO dto = new SubredditDTO(subreddit);
+            dtos.add(dto);
+        }
+        return dtos;
     }
 
 }
