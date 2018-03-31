@@ -8,29 +8,38 @@
     <artifactId>reddit-bot</artifactId>
     <version>1.0-SNAPSHOT</version>
 
-    <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>1.5.3.RELEASE</version>
-        <relativePath/> <!-- lookup parent from reddit_bot.repository -->
-    </parent>
+    <repositories>
+        <repository>
+            <id>jcenter</id>
+            <url>https://jcenter.bintray.com</url>
+        </repository>
+    </repositories>
+
+    <properties>
+        <spring.version>1.5.10.RELEASE</spring.version>
+        <start-class>reddit_bot.SpringBootStart</start-class>
+    </properties>
+
 
     <dependencies>
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
+            <version>${spring.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
+            <version>${spring.version}</version>
             <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
+            <version>${spring.version}</version>
         </dependency>
 
         <dependency>
@@ -78,10 +87,13 @@
         <dependency>
             <groupId>org.apache.tomcat.embed</groupId>
             <artifactId>tomcat-embed-jasper</artifactId>
+            <version>9.0.6</version>
         </dependency>
+
         <dependency>
-            <groupId>javax.servlet</groupId>
+            <groupId>javax.servlet.jsp.jstl</groupId>
             <artifactId>jstl</artifactId>
+            <version>1.2</version>
         </dependency>
 
         <dependency>
@@ -141,11 +153,5 @@
 
         </plugins>
     </build>
-
-
-    <properties>
-        <!-- The main class to start by executing java -jar -->
-        <start-class>reddit_bot.SpringBootStart</start-class>
-    </properties>
 
 </project>

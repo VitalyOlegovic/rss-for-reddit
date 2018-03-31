@@ -121,7 +121,7 @@ public class RedditSubmitter {
         String clientSecret = properties.getProperty("credentials.client.secret");
         String redirectUrl = properties.getProperty("credentials.redirect.url");
 
-        return Credentials.script(username, password, clientId, clientSecret, redirectUrl);
+        return Credentials.script(username, password, clientId, clientSecret);
     }
 
     private Properties readProperties() throws IOException {
