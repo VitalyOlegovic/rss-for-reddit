@@ -1,7 +1,5 @@
 package reddit_bot.reddit;
 
-import org.jsoup.Connection;
-import org.jsoup.Jsoup;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,10 +13,8 @@ import reddit_bot.entity.LinkSending;
 import reddit_bot.entity.Subreddit;
 import reddit_bot.repository.LinkSendingRepository;
 import reddit_bot.repository.SubredditRepository;
-import reddit_bot.service.LinkService;
 import reddit_bot.service.SubredditService;
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.Date;
 
