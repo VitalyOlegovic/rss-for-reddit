@@ -51,6 +51,7 @@ public class RedditSubmitterService {
         logger.info("Current linkBean: " + link);
 
         try {
+
             URL url = new URL(link.getUrl());
             redditSubmitter.submitLink(subreddit.getName(), url, link.getTitle());
 
@@ -70,7 +71,6 @@ public class RedditSubmitterService {
         logger.info("Current linkBean: " + link);
 
         try {
-            link = removeRedirects(link);
 
             URL url = new URL(link.getUrl());
             redditSubmitter.submitLink(subreddit.getName(), url, link.getTitle(), flair);
@@ -87,11 +87,6 @@ public class RedditSubmitterService {
         }
     }
 
-    private Link removeRedirects(Link link) throws IOException {
-        Connection.Response response = Jsoup.connect(link.getUrl()).execute();
-        link.setUrl(response.url().toString());
-        return link;
-    }
 
     public static void waitSomeTime(){
         logger.info("Waiting some time...");

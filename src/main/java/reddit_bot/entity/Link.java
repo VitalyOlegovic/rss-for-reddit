@@ -1,6 +1,11 @@
 package reddit_bot.entity;
 
+import org.apache.commons.lang3.StringEscapeUtils;
+import org.jsoup.Connection;
+import org.jsoup.Jsoup;
+
 import javax.persistence.*;
+import java.io.IOException;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;

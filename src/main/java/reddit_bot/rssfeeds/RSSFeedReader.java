@@ -1,5 +1,8 @@
 package reddit_bot.rssfeeds;
 
+import org.apache.commons.lang3.StringEscapeUtils;
+import org.jsoup.Connection;
+import org.jsoup.Jsoup;
 import org.springframework.stereotype.Service;
 import reddit_bot.bean.FeedBean;
 import reddit_bot.bean.LinkBean;
@@ -12,6 +15,7 @@ import reddit_bot.entity.Link;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -68,7 +72,21 @@ public class RSSFeedReader {
 
                 Link link = new Link();
                 link.setTitle(syndEntry.getTitle());
-                link.setUrl(syndEntry.getLink());
+
+                Connection.Response response = null;
+                try {
+                    response = Jsoup.connect(syndEntry.getLink()).execute();
+                    link.setUrl(response.url().toString());
+                    if(syndEntry.getTitle().isEmpty()) {
+                        link.setTitle(response.parse().title());
+                    }
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    link.setUrl(syndEntry.getLink());
+                }
+
+                link.setTitle(StringEscapeUtils.unescapeHtml4(link.getTitle()));
                 link.setPublicationDate(syndEntry.getPublishedDate());
                 link.setFeed(feed);
 

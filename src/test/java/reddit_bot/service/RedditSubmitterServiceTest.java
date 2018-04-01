@@ -13,7 +13,7 @@ public class RedditSubmitterServiceTest extends AbstractTest {
     @Test
     @Ignore
     public void send(){
-        linkService.updateFeeds();
+        //linkService.updateFeeds();
         redditSubmitterService.send();
     }
 

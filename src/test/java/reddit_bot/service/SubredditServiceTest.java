@@ -45,7 +45,7 @@ public class SubredditServiceTest extends AbstractTest {
     @Test
     @Ignore
     public void bannedDomain() throws URISyntaxException, IOException {
-        String url = "http://feedproxy.google.com/~r/SocialDigitalKnowledge/~3/dzdvO-9OZIs/";
+        String url = "http://feedproxy.google.com/~r/SocialDigitalKnowledge/~3/WXYxZ6q76xo/";
 
         Connection.Response response = Jsoup.connect(url).execute();
         logger.info(response.statusCode() + " : " + response.url());

@@ -1,6 +1,8 @@
 package reddit_bot.service;
 
 import org.apache.commons.lang3.StringEscapeUtils;
+import org.jsoup.Connection;
+import org.jsoup.Jsoup;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +18,7 @@ import reddit_bot.repository.LinkRepository;
 import reddit_bot.repository.SubredditRepository;
 import reddit_bot.rssfeeds.RSSFeedReader;
 
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -59,8 +62,6 @@ public class LinkService {
             linkList.forEach((link -> {
                 Iterable<Link> links = linkRepository.findByUrl(link.getUrl());
                 if(! links.iterator().hasNext()) {
-                    String title = StringEscapeUtils.unescapeHtml4(link.getTitle());
-                    link.setTitle(title);
                     linkRepository.save(link);
                 }
             }));
