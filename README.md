@@ -17,3 +17,7 @@ https://github.com/eyalgo/rss-reader
 ## Run with Docker
 
     docker build -t reddit-bot/reddit-bot .
+
+## Database fixes
+    alter table feed_subreddit change feed_id feed_id bigint;
+    alter table feed_subreddit change subreddit_id subreddit_id bigint;

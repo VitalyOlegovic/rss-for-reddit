@@ -1,7 +1,9 @@
 package reddit_bot.service;
 
-import org.junit.Ignore;
-import org.junit.Test;
+
+
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import reddit_bot.AbstractTest;
@@ -16,27 +18,27 @@ public class LinkSendingServiceTest extends AbstractTest {
     LinkSendingService linkSendingService = configurableApplicationContext.getBean(LinkSendingService.class);
 
     @Test
-    @Ignore
+    @Disabled
     public void linksSentRecently(){
-        Subreddit subreddit = getTestSubreddit();
-        int i = linkSendingService.countLinksSentRecently(subreddit);
-        logger.info("Number of links sent recently: " + i);
+        getTestSubreddit()
+                .map(subreddit -> linkSendingService.countLinksSentRecently(subreddit))
+                .ifPresent(i -> logger.info("Number of links sent recently: " + i));
     }
 
     @Test
-    @Ignore
+    @Disabled
     public void feedsSentRecently(){
-        Subreddit subreddit = getTestSubreddit();
-        Set<Long> longSet = linkSendingService.feedsSentRecently(subreddit);
-        logger.info("Feeds sent recently: " + longSet.toString());
+        getTestSubreddit()
+                .map(subreddit -> linkSendingService.feedsSentRecently(subreddit))
+                .ifPresent(longSet -> logger.info("Feeds sent recently: " + longSet.toString()));
     }
 
     @Test
-    @Ignore
+    @Disabled
     public void feedsBooksSentRecently(){
-        Subreddit subreddit = getBooksSubreddit();
-        Set<Long> longSet = linkSendingService.feedsSentRecently(subreddit);
-        logger.info("Feeds sent recently: " + longSet.toString());
+        getBooksSubreddit()
+                .map(subreddit -> linkSendingService.feedsSentRecently(subreddit))
+                .ifPresent(longSet ->  logger.info("Feeds sent recently: " + longSet.toString()));
     }
 
 }

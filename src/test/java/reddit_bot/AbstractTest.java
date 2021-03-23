@@ -1,10 +1,13 @@
 package reddit_bot;
 
-import org.junit.BeforeClass;
+
+import org.junit.jupiter.api.BeforeAll;
 import org.springframework.boot.SpringApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 import reddit_bot.entity.Subreddit;
 import reddit_bot.repository.SubredditRepository;
+
+import java.util.Optional;
 
 public abstract class AbstractTest {
 
@@ -12,7 +15,7 @@ public abstract class AbstractTest {
 
     private static SubredditRepository subredditRepository =  configurableApplicationContext.getBean(SubredditRepository.class);
 
-    @BeforeClass
+    @BeforeAll
     public static void beforeClass(){
           //configurableApplicationContext = SpringApplication.run(SpringBootStart.class);
     }
@@ -21,11 +24,11 @@ public abstract class AbstractTest {
         return configurableApplicationContext;
     }
 
-    public static Subreddit getTestSubreddit(){
-        return subredditRepository.findOne(5L);
+    public static Optional<Subreddit> getTestSubreddit(){
+        return subredditRepository.findById(5L);
     }
 
-    public static Subreddit getBooksSubreddit(){
-        return subredditRepository.findOne(1L);
+    public static Optional<Subreddit> getBooksSubreddit(){
+        return subredditRepository.findById(1L);
     }
 }

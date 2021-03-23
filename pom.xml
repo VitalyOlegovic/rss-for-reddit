@@ -16,7 +16,7 @@
     </repositories>
 
     <properties>
-        <spring.version>1.5.10.RELEASE</spring.version>
+        <spring.version>2.4.4</spring.version>
         <start-class>reddit_bot.SpringBootStart</start-class>
     </properties>
 
@@ -45,7 +45,7 @@
         <dependency>
             <groupId>net.dean.jraw</groupId>
             <artifactId>JRAW</artifactId>
-            <version>0.9.0</version>
+            <version>1.1.0</version>
         </dependency>
 
         <dependency>
@@ -81,7 +81,7 @@
         <dependency>
             <groupId>org.apache.tomcat.embed</groupId>
             <artifactId>tomcat-embed-jasper</artifactId>
-            <version>8.5.29</version>
+            <version>10.0.4</version>
         </dependency>
 
         <dependency>

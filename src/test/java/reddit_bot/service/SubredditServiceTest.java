@@ -1,20 +1,18 @@
 package reddit_bot.service;
 
-import org.apache.commons.io.IOUtils;
+
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import reddit_bot.AbstractTest;
 import reddit_bot.entity.Link;
-import reddit_bot.entity.Subreddit;
 
 import java.io.IOException;
-import java.net.URI;
 import java.net.URISyntaxException;
-import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -25,25 +23,26 @@ public class SubredditServiceTest extends AbstractTest {
     SubredditService subredditService = configurableApplicationContext.getBean(SubredditService.class);
 
     @Test
-    @Ignore
+    @Disabled
     public void sendLinks(){
-        Subreddit subreddit = getTestSubreddit();
-        subredditService.sendLinks(subreddit);
+        getTestSubreddit().ifPresent(subredditService::sendLinks);
     }
 
     @Test
-    @Ignore
+    @Disabled
     public void findLinksToSend(){
-        Subreddit subreddit = getTestSubreddit();
         Set<Long> feedsSoFar = new HashSet<Long>();
-        Iterable<Link> linkIterable = subredditService.findLinksToSend(subreddit, feedsSoFar);
+        Iterable<Link> linkIterable = getTestSubreddit().map(
+                subreddit -> subredditService.findLinksToSend(subreddit, feedsSoFar))
+                .orElse(new ArrayList<>());
+
         for(Link link : linkIterable){
             logger.info(link.toString());
         }
     }
 
     @Test
-    @Ignore
+    @Disabled
     public void bannedDomain() throws URISyntaxException, IOException {
         String url = "http://feedproxy.google.com/~r/SocialDigitalKnowledge/~3/WXYxZ6q76xo/";
 

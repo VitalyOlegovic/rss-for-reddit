@@ -1,7 +1,8 @@
 package reddit_bot.service;
 
-import org.junit.Ignore;
-import org.junit.Test;
+
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import reddit_bot.AbstractTest;
 import reddit_bot.reddit.RedditSubmitterService;
 
@@ -11,7 +12,7 @@ public class RedditSubmitterServiceTest extends AbstractTest {
     RedditSubmitterService redditSubmitterService = configurableApplicationContext.getBean(RedditSubmitterService.class);
 
     @Test
-    @Ignore
+    @Disabled
     public void send(){
         //linkService.updateFeeds();
         redditSubmitterService.send();

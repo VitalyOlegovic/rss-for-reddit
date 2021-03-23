@@ -2,17 +2,19 @@ package reddit_bot.reddit;
 
 import net.dean.jraw.ApiException;
 import net.dean.jraw.RedditClient;
-import net.dean.jraw.fluent.FluentRedditClient;
+
+import net.dean.jraw.http.NetworkAdapter;
 import net.dean.jraw.http.NetworkException;
+import net.dean.jraw.http.OkHttpNetworkAdapter;
 import net.dean.jraw.http.UserAgent;
-import net.dean.jraw.http.oauth.Credentials;
-import net.dean.jraw.http.oauth.OAuthData;
-import net.dean.jraw.http.oauth.OAuthException;
-import net.dean.jraw.http.oauth.OAuthHelper;
-import net.dean.jraw.managers.AccountManager;
-import net.dean.jraw.managers.ModerationManager;
-import net.dean.jraw.models.FlairTemplate;
-import net.dean.jraw.models.Submission;
+import net.dean.jraw.models.*;
+import net.dean.jraw.oauth.Credentials;
+import net.dean.jraw.oauth.OAuthException;
+import net.dean.jraw.oauth.OAuthHelper;
+import net.dean.jraw.pagination.BarebonesPaginator;
+import net.dean.jraw.references.SubmissionFlairReference;
+import net.dean.jraw.references.SubmissionReference;
+import net.dean.jraw.references.SubredditReference;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,7 +24,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Properties;
 
 @Service
@@ -30,7 +34,6 @@ public class RedditSubmitter {
 
     private final static Logger logger = LoggerFactory.getLogger(RedditSubmitter.class);
 
-    private FluentRedditClient fluent;
     private Properties properties;
     RedditClient redditClient;
 
@@ -43,12 +46,15 @@ public class RedditSubmitter {
             properties = readProperties();
 
             UserAgent myUserAgent = buildUserAgent();
-            redditClient = new RedditClient(myUserAgent);
+            NetworkAdapter adapter = new OkHttpNetworkAdapter(myUserAgent);
+
             Credentials credentials = buildCredentials();
-            OAuthHelper oAuthHelper = redditClient.getOAuthHelper();
+            redditClient = OAuthHelper.automatic(adapter, credentials);
+            /*
+            OAuthHelper oAuthHelper = redditClient.getAuthManager();
             OAuthData authData = oAuthHelper.easyAuth(credentials);
             redditClient.authenticate(authData);
-            fluent = new FluentRedditClient(redditClient);
+            fluent = new FluentRedditClient(redditClient);*/
         } catch (IOException e) {
             logger.error(e.getMessage(),e);
         } catch (OAuthException e) {
@@ -58,11 +64,11 @@ public class RedditSubmitter {
 
     public void submitLink(String subredditName, URL url, String title) throws ApiException, MalformedURLException {
         try {
-            fluent.subreddit(subredditName).submit(url, title);
+            redditClient.subreddit(subredditName).submit(SubmissionKind.LINK, title, url.toString(), true);
         }catch(NetworkException ae){
             logger.error(ae.getMessage(), ae);
             init();
-            fluent.subreddit(subredditName).submit(url, title);
+            redditClient.subreddit(subredditName).submit(SubmissionKind.LINK, title, url.toString(), true);
         }
     }
 
@@ -77,31 +83,23 @@ public class RedditSubmitter {
     }
 
     private void submitLinkInternal(String subredditName, URL url, String title, String flair) throws NetworkException, ApiException {
-        Submission submission = fluent.subreddit(subredditName).submit(url, title);
+        SubredditReference subredditReference = redditClient.subreddit(subredditName);
+        SubmissionReference submissionReference = subredditReference.submit(SubmissionKind.LINK, title, url.toString(), true);
 
         if(StringUtils.isNotBlank(flair)) {
-            submitFlair(subredditName, submission, flair);
+            submitFlair(subredditReference, submissionReference, flair);
         }
     }
 
-    private void submitFlair(String subredditName, Submission submission, String flair) throws ApiException {
-        AccountManager accountManager = new AccountManager(redditClient);
-        List<FlairTemplate> flairTemplateList = accountManager.getFlairChoices(submission);
-
-        ModerationManager moderationManager = new ModerationManager(redditClient);
-
-        FlairTemplate flairTemplate = null;
-
-        for (FlairTemplate ft : flairTemplateList) {
-            if (ft.getText().equalsIgnoreCase(flair)) {
-                logger.info("Flair found");
-                flairTemplate = ft;
-            }
-        }
-
-        if (flairTemplate != null) {
-            moderationManager.setFlair(subredditName, flairTemplate, flair, submission);
-        }
+    private void submitFlair(SubredditReference subredditReference, SubmissionReference submissionReference, String flairText)
+            throws ApiException {
+        List<Flair> flairs = subredditReference.linkFlairOptions();
+        Optional<Flair> optionalFlair = flairs.stream().filter(flair -> flair.getText().equals(flairText)).findFirst();
+        optionalFlair.ifPresent(
+                flair -> {
+                    submissionReference.flair(subredditReference.getSubreddit()).updateToTemplate(flair.getId(), flair.getText());
+                }
+        );
     }
 
     private UserAgent buildUserAgent(){
@@ -111,7 +109,7 @@ public class RedditSubmitter {
         String version = properties.getProperty("user.agent.version");
         String redditUsername = properties.getProperty("user.agent.reddit.username");
 
-        return UserAgent.of(platform, appId, version, redditUsername);
+        return new UserAgent(platform, appId, version, redditUsername);
     }
 
     private Credentials buildCredentials(){
