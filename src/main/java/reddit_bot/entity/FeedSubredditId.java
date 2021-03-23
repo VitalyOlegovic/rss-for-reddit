@@ -7,9 +7,9 @@ import javax.persistence.Embeddable;
 public class FeedSubredditId  implements java.io.Serializable {
 
     @Column(name="feed_id", nullable=false)
-    private int feedId;
+    private long feedId;
     @Column(name="subreddit_id", nullable=false)
-    private int subredditId;
+    private long subredditId;
 
     public FeedSubredditId() {
     }
@@ -22,17 +22,17 @@ public class FeedSubredditId  implements java.io.Serializable {
 
 
 
-    public int getFeedId() {
+    public long getFeedId() {
         return this.feedId;
     }
 
-    public void setFeedId(int feedId) {
+    public void setFeedId(long feedId) {
         this.feedId = feedId;
     }
 
 
 
-    public int getSubredditId() {
+    public long getSubredditId() {
         return this.subredditId;
     }
 
@@ -54,8 +54,8 @@ public class FeedSubredditId  implements java.io.Serializable {
     public int hashCode() {
         int result = 17;
 
-        result = 37 * result + this.getFeedId();
-        result = 37 * result + this.getSubredditId();
+        result = 37 * result + Math.toIntExact(this.getFeedId());
+        result = 37 * result + Math.toIntExact(this.getSubredditId());
         return result;
     }
 

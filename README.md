@@ -13,3 +13,7 @@ It has a Spring Boot scheduler. To use crontab, see: https://www.raspberrypi.org
 https://github.com/Ferocit/RedditRssBot
 
 https://github.com/eyalgo/rss-reader
+
+## Run with Docker
+
+    docker build -t reddit-bot/reddit-bot .
