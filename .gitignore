@@ -15,7 +15,7 @@ hs_err_pid*
 /reddit-bot.iml
 /db_file.properties
 /db_file.script
-/target/
+target/
 /log.out
 /src/main/resources/hibernate.cfg.xml
 /src/main/resources/hibernate.properties
@@ -27,3 +27,7 @@ hs_err_pid*
 /src/main/resources/facebook4j.properties
 /project/target
 .bsp
+.vscode
+.metals
+.bloop
+metals.sbt

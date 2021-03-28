@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import reddit_bot.reddit.RedditSubmitterService;
 import reddit_bot.service.LinkService;
+import reddit_bot.service.LinkUpdater;
 
 @Controller
 public class TestController implements ErrorController {
@@ -23,6 +24,9 @@ public class TestController implements ErrorController {
 
     @Autowired
     RedditSubmitterService redditSubmitterService;
+
+    @Autowired
+    LinkUpdater linkUpdater;
 
     @RequestMapping("/")
     @ResponseBody
@@ -52,6 +56,12 @@ public class TestController implements ErrorController {
     @ResponseBody
     public void updateFeeds(){
         linkService.updateFeeds();
+    }
+
+    @RequestMapping("/updateLinks")
+    @ResponseBody
+    public void updateLinks(){
+        linkUpdater.updateFeeds();
     }
 
     @RequestMapping("/send")
