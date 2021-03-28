@@ -1,0 +1,31 @@
+version: "3.8"
+
+services:
+  database:
+    image: mysql:8.0.23
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: redditbot
+      MYSQL_DATABASE: redditbot
+      MYSQL_USER: redditbot
+      MYSQL_PASSWORD: redditbot
+
+  reddit_bot:
+    depends_on:
+      - database
+    image: reddit-bot/reddit-bot
+    ports:
+      - "8080:8080"
+    restart: always
+    environment:
+      DB_HOST: jdbc:mysql://database:3306/redditbot
+      DB_USER: redditbot
+      DB_PASSWORD: redditbot
+      DB_NAME: redditbot
+
+volumes:
+  db_data: {}
