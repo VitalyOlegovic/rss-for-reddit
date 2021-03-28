@@ -26,3 +26,4 @@ hs_err_pid*
 /db_file.tmp/
 /src/main/resources/facebook4j.properties
 /project/target
+.bsp
