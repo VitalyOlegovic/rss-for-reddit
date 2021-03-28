@@ -3,6 +3,8 @@ version: "3.8"
 services:
   database:
     image: mysql:8.0.23
+    ports:
+      - "3306:3306"
     volumes:
       - db_data:/var/lib/mysql
     restart: always
@@ -17,7 +19,7 @@ services:
       - database
     image: reddit-bot/reddit-bot
     ports:
-      - "8000:80"
+      - "8080:8080"
     restart: always
     environment:
       DB_HOST: jdbc:mysql://database:3306/redditbot
