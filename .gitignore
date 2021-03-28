@@ -1,4 +1,5 @@
 *.class
+target
 
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
@@ -25,3 +26,10 @@ hs_err_pid*
 /.settings/
 /db_file.tmp/
 /src/main/resources/facebook4j.properties
+
+# metals
+.bloop
+.bsp
+.metals
+.vscode
+metals.sbt
