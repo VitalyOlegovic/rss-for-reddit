@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import reddit_bot.reddit.RedditSubmitterService;
-import reddit_bot.service.LinkService;
 
 @Controller
 public class TestController implements ErrorController {
@@ -17,9 +16,6 @@ public class TestController implements ErrorController {
     private final static Logger logger = LoggerFactory.getLogger(TestController.class);
 
     private static final String PATH = "/error";
-
-    @Autowired
-    LinkService linkService;
 
     @Autowired
     RedditSubmitterService redditSubmitterService;
@@ -46,12 +42,6 @@ public class TestController implements ErrorController {
     @Override
     public String getErrorPath() {
         return PATH;
-    }
-
-    @RequestMapping("/updateFeeds")
-    @ResponseBody
-    public void updateFeeds(){
-        linkService.updateFeeds();
     }
 
     @RequestMapping("/send")
