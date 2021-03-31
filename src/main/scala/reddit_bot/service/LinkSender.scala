@@ -3,17 +3,20 @@ package reddit_bot.service
 import org.springframework.beans.factory.annotation.Autowired;
 import scala.jdk.CollectionConverters._
 
-import reddit_bot.dto.SubredditDTO;
-import reddit_bot.entity.Feed;
-import reddit_bot.entity.FeedSubreddit;
-import reddit_bot.entity.Link;
-import reddit_bot.entity.Subreddit;
-import reddit_bot.reddit.RedditSubmitterService;
-import reddit_bot.repository.FeedSubredditRepository;
-import reddit_bot.repository.FeedsRepository;
-import reddit_bot.repository.LinkRepository;
-import reddit_bot.repository.SubredditRepository;
+import reddit_bot.dto.SubredditDTO
+import reddit_bot.entity.Feed
+import reddit_bot.entity.FeedSubreddit
+import reddit_bot.entity.Link
+import reddit_bot.entity.Subreddit
+import reddit_bot.reddit.RedditSubmitterService
+import reddit_bot.repository.FeedSubredditRepository
+import reddit_bot.repository.FeedsRepository
+import reddit_bot.repository.LinkRepository
+import reddit_bot.repository.SubredditRepository
 
+import org.springframework.stereotype.Service
+
+@Service
 class LinkSender(
     @Autowired linkRepository: LinkRepository,
     @Autowired feedsRepository: FeedsRepository,
@@ -48,7 +51,22 @@ class LinkSender(
         ) : List[Link] = {
         val feeds = feedsRepository.findBySubreddit(subreddit).asScala.toSet
         val notSentFeeds = feeds.map(_.getId).removedAll(feedsSoFar).map( long2Long(_) ).toList.asJava
-        linkRepository.findByFeedIds( notSentFeeds, subreddit  ).asScala.toList
+        val links = linkRepository.findByFeedIds( notSentFeeds, subreddit  ).asScala.toList
+        enforceOneLinkForSource( links )
+    }
+
+    def enforceOneLinkForSource(links: List[Link]): List[Link] = {
+        links
+            .groupBy(_.getFeed().getId())
+            .map( 
+                _._2
+                    .sortBy( _.getPublicationDate() )
+                    .reverse
+                    .head 
+            )
+            .toList
+            .sortBy(_.getPublicationDate())
+            .reverse
     }
 
     def subreddits: java.lang.Iterable[SubredditDTO] = {
