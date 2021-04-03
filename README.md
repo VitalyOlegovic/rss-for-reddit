@@ -28,3 +28,10 @@ The roadmap for the project is the following:
 * replace Spring with FS2
 * replace Maven with SBT
 * find alternatives for JRAW and ROME
+
+## Lessons learned
+
+There are some things you can't do
+
+* can't use Spring Boot with sbt
+* can't update Spring Boot version, because it creates conflicts with JRAW
