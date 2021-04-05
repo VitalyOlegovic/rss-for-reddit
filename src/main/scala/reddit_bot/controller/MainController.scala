@@ -3,6 +3,7 @@ import org.springframework.stereotype.Controller
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.ResponseBody
+import reddit_bot.persistence.SubredditPersistence
 import reddit_bot.service.LinkUpdater
 import reddit_bot.service.LinkSender
 
@@ -24,5 +25,14 @@ class MainController(
     def linksSend() : String = {
         linkSender.send
         "Links sent"
+    }
+
+    @RequestMapping(Array("/listSubreddits"))
+    @ResponseBody
+    def listSubreddits = {
+        val sp = new SubredditPersistence()
+        sp.read()
+          .map(_.toString)
+          .getOrElse("")
     }
 }
