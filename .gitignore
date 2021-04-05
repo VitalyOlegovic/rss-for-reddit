@@ -25,9 +25,10 @@ target/
 /.settings/
 /db_file.tmp/
 /src/main/resources/facebook4j.properties
-/project/target
-.bsp
-.vscode
-.metals
+
+# metals
 .bloop
+.bsp
+.metals
+.vscode
 metals.sbt

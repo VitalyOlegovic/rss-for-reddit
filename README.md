@@ -1,4 +1,4 @@
-# Java RSS to Reddit
+# RSS to Reddit
 
 A project to read XML feeds and publish them on reddit.
 
@@ -17,3 +17,21 @@ https://github.com/eyalgo/rss-reader
 ## Run with Docker
 
     docker build -t reddit-bot/reddit-bot .
+
+## Roadmap
+
+The roadmap for the project is the following:
+
+* debug the Java / Maven / Spring Boot / Java Persistence API version
+* replace Java with Scala where it makes sense
+* replace Java Persistence API with Doobie and Quill
+* replace Spring with FS2
+* replace Maven with SBT
+* find alternatives for JRAW and ROME
+
+## Lessons learned
+
+There are some things you can't do
+
+* can't use Spring Boot with sbt
+* can't update Spring Boot version, because it creates conflicts with JRAW

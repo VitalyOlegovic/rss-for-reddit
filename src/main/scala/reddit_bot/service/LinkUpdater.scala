@@ -17,7 +17,7 @@ class LinkUpdater(
                   @Autowired feedsRepository: FeedsRepository
                 ){
 
-    private val logger = LoggerFactory.getLogger(classOf[LinkService])
+    private val logger = LoggerFactory.getLogger(classOf[LinkUpdater])
 
     private[service] val rssFeedReader = new RSSFeedReader
 
