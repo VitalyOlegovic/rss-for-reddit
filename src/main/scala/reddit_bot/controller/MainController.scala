@@ -7,7 +7,7 @@ import reddit_bot.service.LinkUpdater
 import reddit_bot.service.LinkSender
 
 @Controller
-class Prova(
+class MainController(
     @Autowired linkUpdater: LinkUpdater,
     @Autowired linkSender: LinkSender
 ){

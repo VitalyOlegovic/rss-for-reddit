@@ -1,5 +1,11 @@
 package reddit_bot.service
 
+import java.net.URL;
+import java.util.Date;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import scala.jdk.CollectionConverters._
 
@@ -7,24 +13,29 @@ import reddit_bot.dto.SubredditDTO
 import reddit_bot.entity.Feed
 import reddit_bot.entity.FeedSubreddit
 import reddit_bot.entity.Link
+import reddit_bot.entity.LinkSending
 import reddit_bot.entity.Subreddit
-import reddit_bot.reddit.RedditSubmitterService
 import reddit_bot.repository.FeedSubredditRepository
 import reddit_bot.repository.FeedsRepository
 import reddit_bot.repository.LinkRepository
+import reddit_bot.repository.LinkSendingRepository;
 import reddit_bot.repository.SubredditRepository
+import reddit_bot.reddit.RedditSubmitter
 
 import org.springframework.stereotype.Service
 
 @Service
 class LinkSender(
     @Autowired linkRepository: LinkRepository,
+    @Autowired linkSendingRepository: LinkSendingRepository,
     @Autowired feedsRepository: FeedsRepository,
     @Autowired sentLinksCounting: SentLinksCounting,
-    @Autowired redditSubmitterService: RedditSubmitterService,
+    @Autowired redditSubmitter: RedditSubmitter,
     @Autowired feedSubredditRepository: FeedSubredditRepository,
     @Autowired subredditRepository: SubredditRepository
 ){
+
+    private val logger = LoggerFactory.getLogger(classOf[LinkSender])
 
     def send = {
         subredditRepository.findEnabled.forEach( sendLinks(_) )
@@ -40,7 +51,7 @@ class LinkSender(
                 .foreach{
                     link => {
                         val feedSubreddit = feedSubredditRepository.getFeedSubreddit(subreddit, link.getFeed())
-                        redditSubmitterService.submitLink(subreddit, link, feedSubreddit.getFlair())
+                        submitLink(subreddit, link, Option(feedSubreddit.getFlair()))
                     }
                 }
         }
@@ -76,4 +87,39 @@ class LinkSender(
             .map(new SubredditDTO(_))
             .asJava
     }
+
+    def submitLink(subreddit: Subreddit, link: Link, maybeFlair: Option[String]): Unit = {
+        logger.info("Current linkBean: " + link)
+
+        try{
+            maybeFlair
+                .map(
+                    flair =>  redditSubmitter.submitLink(subreddit.getName, new URL(link.getUrl), link.getTitle, flair)
+                )
+                .getOrElse( redditSubmitter.submitLink(subreddit.getName, new URL(link.getUrl), link.getTitle) )
+
+            val linkSending = new LinkSending(link,subreddit, new Date())
+            linkSendingRepository.save(linkSending)
+
+            if(! subreddit.getModerator){
+                waitSomeTime()
+            }
+        } catch {
+            case e: Error => {
+                logger.error(e.getMessage(), e)
+                waitSomeTime()
+            }
+        }
+    }
+
+    def waitSomeTime() : Unit = {
+        logger.info("Waiting some time...");
+        try {
+            Thread.sleep(10 * 60 * 1000);  // 10 minutes.
+        } catch {
+            case _:InterruptedException => Thread.currentThread().interrupt();
+        }
+    }
+
+
 }
