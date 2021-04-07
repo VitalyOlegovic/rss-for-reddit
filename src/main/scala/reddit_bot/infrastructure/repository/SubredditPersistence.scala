@@ -1,8 +1,8 @@
-package reddit_bot.persistence
+package reddit_bot.infrastructure.repository
 
+import cats.effect.{ContextShift, IO}
 import doobie._
 import doobie.implicits._
-import cats.effect.{ContextShift, IO}
 
 import scala.concurrent.ExecutionContext
 import scala.runtime.ScalaRunTime
@@ -10,7 +10,7 @@ import scala.runtime.ScalaRunTime
 class SubredditPersistence {
   implicit val cs: ContextShift[IO] = IO.contextShift(ExecutionContext.global)
 
-  def read(): Option[Subreddit] = {
+  def read(): List[Subreddit] = {
 
 
     val xa = Transactor.fromDriverManager[IO](
@@ -27,7 +27,9 @@ class SubredditPersistence {
     override def toString = ScalaRunTime._toString(this)
   }
 
-  def find(): ConnectionIO[Option[Subreddit]] =
-    sql"select id, name from subreddits limit 1".query[Subreddit].option
+  def find(): ConnectionIO[List[Subreddit]] =
+    sql"select id, name from subreddits where enabled = true order by priority"
+      .query[Subreddit]
+      .to[List]
 
 }

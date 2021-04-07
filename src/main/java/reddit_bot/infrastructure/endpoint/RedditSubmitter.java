@@ -1,4 +1,4 @@
-package reddit_bot.reddit;
+package reddit_bot.infrastructure.endpoint;
 
 import net.dean.jraw.ApiException;
 import net.dean.jraw.RedditClient;

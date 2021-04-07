@@ -1,23 +1,15 @@
-package reddit_bot.reddit
+package reddit_bot.infrastructure.endpoint
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.SpringApplication;
-import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Service;
-import reddit_bot.SpringBootStart;
-import reddit_bot.entity.Link;
-import reddit_bot.entity.LinkSending;
-import reddit_bot.entity.Subreddit;
-import reddit_bot.repository.LinkSendingRepository;
-import reddit_bot.repository.SubredditRepository;
+import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.stereotype.Service
+import reddit_bot.domain.entity.{Link, LinkSending, Subreddit}
+import reddit_bot.infrastructure.repository.{LinkSendingRepository, SubredditRepository}
+import reddit_bot.repository.LinkSendingRepository
 import reddit_bot.service.LinkSender
 
-import java.net.URL;
-import java.util.Date;
-
+import java.net.URL
+import java.util.Date
 import scala.jdk.CollectionConverters._
 
 @Service

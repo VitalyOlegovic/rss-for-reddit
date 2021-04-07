@@ -1,10 +1,10 @@
-package reddit_bot.repository;
+package reddit_bot.infrastructure.repository;
 
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
-import reddit_bot.entity.Feed;
-import reddit_bot.entity.Subreddit;
+import reddit_bot.domain.entity.Feed;
+import reddit_bot.domain.entity.Subreddit;
 
 public interface FeedsRepository extends CrudRepository<Feed,Long> {
 

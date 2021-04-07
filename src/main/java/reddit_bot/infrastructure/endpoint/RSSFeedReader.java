@@ -1,17 +1,17 @@
-package reddit_bot.rssfeeds;
+package reddit_bot.infrastructure.endpoint;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.springframework.stereotype.Service;
-import reddit_bot.bean.FeedBean;
-import reddit_bot.bean.LinkBean;
+import reddit_bot.domain.bean.FeedBean;
+import reddit_bot.domain.bean.LinkBean;
 import com.rometools.rome.feed.synd.SyndEntry;
 import com.rometools.rome.feed.synd.SyndFeed;
 import com.rometools.rome.io.SyndFeedInput;
 import com.rometools.rome.io.XmlReader;
-import reddit_bot.entity.Feed;
-import reddit_bot.entity.Link;
+import reddit_bot.domain.entity.Feed;
+import reddit_bot.domain.entity.Link;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

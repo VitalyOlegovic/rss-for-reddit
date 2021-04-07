@@ -1,4 +1,4 @@
-package reddit_bot.entity;
+package reddit_bot.domain.entity;
 
 import javax.persistence.*;
 import java.util.HashSet;

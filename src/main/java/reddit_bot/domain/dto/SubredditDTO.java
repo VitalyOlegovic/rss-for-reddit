@@ -1,6 +1,6 @@
-package reddit_bot.dto;
+package reddit_bot.domain.dto;
 
-import reddit_bot.entity.Subreddit;
+import reddit_bot.domain.entity.Subreddit;
 
 public class SubredditDTO {
 

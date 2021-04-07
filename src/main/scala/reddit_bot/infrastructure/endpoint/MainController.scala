@@ -1,11 +1,12 @@
-package reddit_bot.Controller
-import org.springframework.stereotype.Controller
+package reddit_bot.infrastructure.endpoint
+
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.ResponseBody
-import reddit_bot.persistence.SubredditPersistence
-import reddit_bot.service.LinkUpdater
-import reddit_bot.service.LinkSender
+import org.springframework.stereotype.Controller
+import org.springframework.web.bind.annotation.{RequestMapping, ResponseBody}
+import reddit_bot.infrastructure.repository.SubredditPersistence
+import reddit_bot.service.{LinkSender, LinkUpdater}
+
+import scala.jdk.CollectionConverters.IterableHasAsJava
 
 @Controller
 class MainController(
@@ -29,10 +30,10 @@ class MainController(
 
     @RequestMapping(Array("/listSubreddits"))
     @ResponseBody
-    def listSubreddits = {
+    def listSubreddits: java.lang.Iterable[String] = {
         val sp = new SubredditPersistence()
         sp.read()
           .map(_.toString)
-          .getOrElse("")
+          .asJava
     }
 }

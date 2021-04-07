@@ -3,9 +3,10 @@ package reddit_bot.service
 import org.slf4j.{Logger, LoggerFactory}
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
-import reddit_bot.entity.Feed
-import reddit_bot.repository.{FeedsRepository, LinkRepository, SubredditRepository}
-import reddit_bot.rssfeeds.RSSFeedReader
+import reddit_bot.domain.entity.Feed
+import reddit_bot.infrastructure.endpoint.RSSFeedReader
+import reddit_bot.infrastructure.repository.{FeedsRepository, LinkRepository, SubredditRepository}
+import reddit_bot.repository.SubredditRepository
 
 import java.lang.Iterable
 import scala.jdk.CollectionConverters.{IterableHasAsJava, IterableHasAsScala}

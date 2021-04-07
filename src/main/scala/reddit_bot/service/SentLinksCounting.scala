@@ -2,18 +2,16 @@ package reddit_bot.service
 
 import java.util.HashSet
 import scala.jdk.CollectionConverters._
-
 import org.apache.commons.lang3.time.DateUtils
 import org.slf4j.{Logger, LoggerFactory}
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
-import reddit_bot.repository.LinkSendingRepository
 
 import java.util.Calendar
 import java.util.Date
 import java.util.GregorianCalendar
-
-import reddit_bot.entity.Subreddit
+import reddit_bot.domain.entity.Subreddit
+import reddit_bot.infrastructure.repository.LinkSendingRepository
 
 @Service
 class SentLinksCounting(@Autowired linkSendingRepository: LinkSendingRepository){

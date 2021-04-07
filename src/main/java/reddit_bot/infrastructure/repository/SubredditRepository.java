@@ -1,8 +1,8 @@
-package reddit_bot.repository;
+package reddit_bot.infrastructure.repository;
 
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import reddit_bot.entity.Subreddit;
+import reddit_bot.domain.entity.Subreddit;
 import org.springframework.data.repository.CrudRepository;
 
 public interface SubredditRepository extends CrudRepository<Subreddit,Long> {

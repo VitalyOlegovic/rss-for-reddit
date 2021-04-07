@@ -1,4 +1,4 @@
-package reddit_bot.bean;
+package reddit_bot.domain.bean;
 
 public class FeedBean {
     private long id;
@@ -31,7 +31,7 @@ public class FeedBean {
 
     @Override
     public String toString() {
-        return "reddit_bot.bean.FeedBean{" +
+        return "reddit_bot.domain.bean.FeedBean{" +
                 "id=" + id +
                 ", url='" + url + '\'' +
                 ", subreddit='" + subreddit + '\'' +

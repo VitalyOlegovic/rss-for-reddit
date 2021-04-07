@@ -1,10 +1,10 @@
-package reddit_bot.repository;
+package reddit_bot.infrastructure.repository;
 
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
-import reddit_bot.entity.Link;
-import reddit_bot.entity.Subreddit;
+import reddit_bot.domain.entity.Link;
+import reddit_bot.domain.entity.Subreddit;
 
 import java.util.List;
 

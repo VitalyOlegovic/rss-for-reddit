@@ -1,28 +1,21 @@
 package reddit_bot.service
 
-import java.net.URL;
-import java.util.Date;
+import java.net.URL
+import java.util.Date
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Autowired
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import scala.jdk.CollectionConverters._
-
-import reddit_bot.dto.SubredditDTO
-import reddit_bot.entity.Feed
-import reddit_bot.entity.FeedSubreddit
-import reddit_bot.entity.Link
-import reddit_bot.entity.LinkSending
-import reddit_bot.entity.Subreddit
-import reddit_bot.repository.FeedSubredditRepository
-import reddit_bot.repository.FeedsRepository
-import reddit_bot.repository.LinkRepository
-import reddit_bot.repository.LinkSendingRepository;
-import reddit_bot.repository.SubredditRepository
-import reddit_bot.reddit.RedditSubmitter
-
+import reddit_bot.domain.entity.Feed
+import reddit_bot.domain.entity.FeedSubreddit
+import reddit_bot.domain.entity.Link
+import reddit_bot.domain.entity.LinkSending
+import reddit_bot.domain.entity.Subreddit
 import org.springframework.stereotype.Service
+import reddit_bot.domain.dto.SubredditDTO
+import reddit_bot.infrastructure.endpoint.RedditSubmitter
+import reddit_bot.infrastructure.repository.{FeedSubredditRepository, FeedsRepository, LinkRepository, LinkSendingRepository, SubredditRepository}
 
 @Service
 class LinkSender(
