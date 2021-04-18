@@ -32,8 +32,7 @@ class MainController(
     @ResponseBody
     def listSubreddits: java.lang.Iterable[String] = {
         val sp = new SubredditPersistence()
-        sp.read()
-          .map(_.toString)
-          .asJava
+        sp.read().unsafeRunSync()
+            .map(_.toString).asJava
     }
 }

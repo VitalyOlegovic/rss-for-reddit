@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import reddit_bot.domain.entity.{Link, LinkSending, Subreddit}
 import reddit_bot.infrastructure.repository.{LinkSendingRepository, SubredditRepository}
-import reddit_bot.repository.LinkSendingRepository
 import reddit_bot.service.LinkSender
 
 import java.net.URL

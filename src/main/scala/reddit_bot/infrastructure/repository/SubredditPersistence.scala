@@ -8,19 +8,9 @@ import scala.concurrent.ExecutionContext
 import scala.runtime.ScalaRunTime
 
 class SubredditPersistence {
-  implicit val cs: ContextShift[IO] = IO.contextShift(ExecutionContext.global)
-
-  def read(): List[Subreddit] = {
-
-
-    val xa = Transactor.fromDriverManager[IO](
-      "com.mysql.cj.jdbc.Driver",
-      "jdbc:mysql://database:3306/redditbot",
-      "redditbot",
-      "redditbot"
-    )
-
-    find().transact(xa).unsafeRunSync()
+  
+  def read(): IO[List[Subreddit]] = {
+    find().transact(Database.transactor)
   }
 
   case class Subreddit(id: Long, name: String){

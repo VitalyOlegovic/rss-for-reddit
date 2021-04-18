@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service
 import reddit_bot.domain.entity.Feed
 import reddit_bot.infrastructure.endpoint.RSSFeedReader
 import reddit_bot.infrastructure.repository.{FeedsRepository, LinkRepository, SubredditRepository}
-import reddit_bot.repository.SubredditRepository
+import reddit_bot.infrastructure.repository.SubredditRepository
 
 import java.lang.Iterable
 import scala.jdk.CollectionConverters.{IterableHasAsJava, IterableHasAsScala}
