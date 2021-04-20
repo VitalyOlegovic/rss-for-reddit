@@ -13,7 +13,7 @@ class SubredditPersistenceTest {
   def listSubreddits = {
     val subredditPersistence = new SubredditPersistence()
     val result = subredditPersistence.read()
-    val toPrint = result.map(_.toString).mkString(", ")
+    val toPrint = result.unsafeRunSync().map(_.toString).mkString(", ")
     logger.debug(toPrint)
   }
 

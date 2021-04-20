@@ -31,8 +31,7 @@ class MainController(
     @RequestMapping(Array("/listSubreddits"))
     @ResponseBody
     def listSubreddits: java.lang.Iterable[String] = {
-        val sp = new SubredditPersistence()
-        sp.read().unsafeRunSync()
+        SubredditPersistence.findEnabled().unsafeRunSync()
             .map(_.toString).asJava
     }
 }

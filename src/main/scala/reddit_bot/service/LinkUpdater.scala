@@ -1,15 +1,18 @@
 package reddit_bot.service
 
+import cats.effect.{ContextShift, IO}
+import cats.implicits._
+
 import org.slf4j.{Logger, LoggerFactory}
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import reddit_bot.domain.entity.Feed
 import reddit_bot.infrastructure.endpoint.RSSFeedReader
-import reddit_bot.infrastructure.repository.{FeedsRepository, LinkRepository, SubredditRepository}
-import reddit_bot.infrastructure.repository.SubredditRepository
+import reddit_bot.infrastructure.repository.{FeedsRepository, LinkRepository, SubredditRepository, SubredditPersistence}
 
 import java.lang.Iterable
-import scala.jdk.CollectionConverters.{IterableHasAsJava, IterableHasAsScala}
+import scala.jdk.CollectionConverters._
+import reddit_bot.domain.entity.Link
 
 @Service
 class LinkUpdater(
@@ -22,25 +25,35 @@ class LinkUpdater(
 
     private[service] val rssFeedReader = new RSSFeedReader
 
-    def getFeeds(): Iterable[Feed] = {
-        subredditRepository
-          .findEnabled
-          .asScala
-          .flatMap(feedsRepository.findBySubreddit(_).asScala)
-          .asJava
-    }
+    def getFeeds(): IO[List[Feed]] = 
+        for{
+            enabled <- SubredditPersistence.findEnabled
+            entitiesEnabled = enabled.map(_.toEntity)
+            frs = entitiesEnabled.flatMap(feedsRepository.findBySubreddit(_).asScala)
+        } yield (frs)
+    
 
-    def updateFeeds: Unit = {
-        getFeeds()
-          .asScala
-          .flatMap(rssFeedReader.readFeedItems(_).asScala)
-          .foreach{
-              link => {
-                  val links = linkRepository.findByUrl(link.getUrl)
-                  if(! links.iterator().hasNext){
-                      linkRepository.save(link)
-                  }
-              }
-          }
+    def updateFeeds(): Unit = {
+        val links = for{
+            feeds <- getFeeds()
+            ls = feeds.flatMap(rssFeedReader.readFeedItems(_).asScala)
+            
+            ios = ls.map(
+                link => 
+                    IO{
+                        val foundLinks = linkRepository
+                            .findByUrl(link.getUrl())
+                            .asScala
+                            
+                        if(foundLinks.size == 0){
+                            linkRepository.save(link)
+                        }
+                        link.getUrl()
+                    }
+            )
+
+            s <- ios.sequence
+        }yield(s)
+        links.unsafeRunSync()
     }
 }
