@@ -7,6 +7,7 @@ import reddit_bot.infrastructure.repository.SubredditPersistence
 import reddit_bot.service.{LinkSender, LinkUpdater}
 
 import scala.jdk.CollectionConverters.IterableHasAsJava
+import reddit_bot.infrastructure.repository.Database
 
 @Controller
 class MainController(
@@ -31,7 +32,7 @@ class MainController(
     @RequestMapping(Array("/listSubreddits"))
     @ResponseBody
     def listSubreddits: java.lang.Iterable[String] = {
-        SubredditPersistence.findEnabled().unsafeRunSync()
+        new SubredditPersistence(Database.transactor).findEnabled().unsafeRunSync()
             .map(_.toString).asJava
     }
 }

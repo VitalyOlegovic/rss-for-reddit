@@ -13,6 +13,8 @@ import reddit_bot.infrastructure.repository.{FeedsRepository, LinkRepository, Su
 import java.lang.Iterable
 import scala.jdk.CollectionConverters._
 import reddit_bot.domain.entity.Link
+import scala.util.Try
+import reddit_bot.infrastructure.repository.Database
 
 @Service
 class LinkUpdater(
@@ -27,7 +29,7 @@ class LinkUpdater(
 
     def getFeeds(): IO[List[Feed]] = 
         for{
-            enabled <- SubredditPersistence.findEnabled
+            enabled <- new SubredditPersistence(Database.transactor).findEnabled
             entitiesEnabled = enabled.map(_.toEntity)
             frs = entitiesEnabled.flatMap(feedsRepository.findBySubreddit(_).asScala)
         } yield (frs)
@@ -36,7 +38,7 @@ class LinkUpdater(
     def updateFeeds(): Unit = {
         val links = for{
             feeds <- getFeeds()
-            ls = feeds.flatMap(rssFeedReader.readFeedItems(_).asScala)
+            ls: List[Link] = feeds.flatMap(rssFeedReader.readFeedItems(_).asScala)
             
             ios = ls.map(
                 link => 
@@ -46,7 +48,7 @@ class LinkUpdater(
                             .asScala
                             
                         if(foundLinks.size == 0){
-                            linkRepository.save(link)
+                            Try(linkRepository.save(link))
                         }
                         link.getUrl()
                     }

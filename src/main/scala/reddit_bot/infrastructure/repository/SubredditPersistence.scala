@@ -9,10 +9,10 @@ import scala.runtime.ScalaRunTime
 import reddit_bot.domain.entity.FeedSubreddit
 import java.util.HashSet
 
-object SubredditPersistence {
+class SubredditPersistence(transactor: Transactor[IO]) {
   
   def findEnabled(): IO[List[Subreddit]] = {
-    find().transact(Database.transactor)
+    find().transact(transactor)
   }
 
   case class Subreddit(
@@ -32,7 +32,7 @@ object SubredditPersistence {
   }
 
   def find(): ConnectionIO[List[Subreddit]] =
-    sql"select id, name, dailyQuota, priority, enabled from subreddits where enabled = true order by priority"
+    sql"select id, name, daily_quota, priority, enabled from subreddits where enabled = true order by priority"
       .query[Subreddit]
       .to[List]
 
