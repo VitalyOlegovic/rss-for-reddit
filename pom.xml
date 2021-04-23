@@ -110,6 +110,11 @@
             <version>0.12.1</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.olegpy</groupId>
+            <artifactId>better-monadic-for_2.13</artifactId>
+            <version>0.3.1</version>
+        </dependency>
 
     </dependencies>
 
@@ -185,6 +190,13 @@
                 <configuration>
                     <scalaVersion>${scala.version}</scalaVersion>
                     <sourceDir>src/main/scala</sourceDir>
+                    <compilerPlugins>
+                        <compilerPlugin>
+                            <groupId>com.olegpy</groupId>
+                            <artifactId>better-monadic-for_2.13</artifactId>
+                            <version>0.3.1</version>
+                        </compilerPlugin>
+                    </compilerPlugins>
                 </configuration>
             </plugin>
 

@@ -8,17 +8,17 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import reddit_bot.domain.entity.Feed
 import reddit_bot.infrastructure.endpoint.RSSFeedReader
-import reddit_bot.infrastructure.repository.{FeedsRepository, LinkRepository, SubredditRepository, SubredditPersistence}
+import reddit_bot.infrastructure.repository.{FeedsRepository, SubredditRepository, SubredditPersistence}
 
 import java.lang.Iterable
 import scala.jdk.CollectionConverters._
 import reddit_bot.domain.entity.Link
 import scala.util.Try
 import reddit_bot.infrastructure.repository.Database
+import reddit_bot.infrastructure.repository.LinkPersistence
 
 @Service
 class LinkUpdater(
-                  @Autowired linkRepository: LinkRepository,
                   @Autowired subredditRepository: SubredditRepository,
                   @Autowired feedsRepository: FeedsRepository
                 ){
@@ -36,26 +36,27 @@ class LinkUpdater(
     
 
     def updateFeeds(): Unit = {
-        val links = for{
+        val linkPersistence = new LinkPersistence(Database.transactor())
+
+        val links: IO[List[Int]] = for{
             feeds <- getFeeds()
-            ls: List[Link] = feeds.flatMap(rssFeedReader.readFeedItems(_).asScala)
+            ls = feeds
+                .map(x => Try(rssFeedReader.readFeedItems(x)))
+                .filter(_.isSuccess)
+                .flatMap(_.get.asScala)
+                
             
-            ios = ls.map(
-                link => 
-                    IO{
-                        val foundLinks = linkRepository
-                            .findByUrl(link.getUrl())
-                            .asScala
-                            
-                        if(foundLinks.size == 0){
-                            Try(linkRepository.save(link))
-                        }
-                        link.getUrl()
-                    }
+            result <- ls.traverse(
+                (link: Link) => 
+                    for{
+                        foundLinksCount: Option[Int] <- linkPersistence.countByUrl(link.getUrl())
+                        maxId <- linkPersistence.maxId()
+                        n: Int <- linkPersistence.insert(link, foundLinksCount, maxId)
+                        
+                    }yield(n)
             )
 
-            s <- ios.sequence
-        }yield(s)
+        }yield(result)
         links.unsafeRunSync()
     }
 }

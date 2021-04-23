@@ -15,11 +15,12 @@ import reddit_bot.domain.entity.Subreddit
 import org.springframework.stereotype.Service
 import reddit_bot.domain.dto.SubredditDTO
 import reddit_bot.infrastructure.endpoint.RedditSubmitter
-import reddit_bot.infrastructure.repository.{FeedSubredditRepository, FeedsRepository, LinkRepository, LinkSendingRepository, SubredditRepository}
+import reddit_bot.infrastructure.repository.{FeedSubredditRepository, FeedsRepository, LinkSendingRepository, SubredditRepository}
+import reddit_bot.infrastructure.repository.LinkPersistence
+import reddit_bot.infrastructure.repository.Database
 
 @Service
 class LinkSender(
-    @Autowired linkRepository: LinkRepository,
     @Autowired linkSendingRepository: LinkSendingRepository,
     @Autowired feedsRepository: FeedsRepository,
     @Autowired sentLinksCounting: SentLinksCounting,
@@ -54,9 +55,9 @@ class LinkSender(
         subreddit: Subreddit, feedsSoFar: Set[scala.Long]
         ) : List[Link] = {
         val feeds = feedsRepository.findBySubreddit(subreddit).asScala.toSet
-        val notSentFeeds = feeds.map(_.getId).removedAll(feedsSoFar).map( long2Long(_) ).toList.asJava
-        val links = linkRepository.findByFeedIds( notSentFeeds, subreddit  ).asScala.toList
-        enforceOneLinkForSource( links )
+        val notSentFeeds = feeds.map(_.getId).removedAll(feedsSoFar).toList
+        val links = new LinkPersistence(Database.transactor()).findByFeedIds( notSentFeeds).unsafeRunSync()
+        enforceOneLinkForSource( links.map(_.toEntity) )
     }
 
     def enforceOneLinkForSource(links: List[Link]): List[Link] = {

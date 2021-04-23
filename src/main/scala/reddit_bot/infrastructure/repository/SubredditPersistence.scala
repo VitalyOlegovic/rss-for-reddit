@@ -6,7 +6,7 @@ import doobie.implicits._
 
 import scala.concurrent.ExecutionContext
 import scala.runtime.ScalaRunTime
-import reddit_bot.domain.entity.FeedSubreddit
+import reddit_bot.domain.entity
 import java.util.HashSet
 
 class SubredditPersistence(transactor: Transactor[IO]) {
@@ -24,9 +24,9 @@ class SubredditPersistence(transactor: Transactor[IO]) {
     ){
     override def toString = ScalaRunTime._toString(this)
 
-    def toEntity() : reddit_bot.domain.entity.Subreddit = 
-      new reddit_bot.domain.entity.Subreddit(
-        id,name,dailyQuota,priority,enabled, new HashSet[FeedSubreddit]()
+    def toEntity() : entity.Subreddit = 
+      new entity.Subreddit(
+        id,name,dailyQuota,priority,enabled, new HashSet[entity.FeedSubreddit]()
       )
     
   }
