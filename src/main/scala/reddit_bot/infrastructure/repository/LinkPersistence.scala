@@ -13,7 +13,7 @@ import java.util.Date
 import scala.runtime.ScalaRunTime
 import org.slf4j.LoggerFactory
 
-class LinkPersistence(transactor: Transactor[IO]){
+class LinkPersistence(transactor: Transactor[IO], feedsRepository: FeedsRepository){
     private val logger = LoggerFactory.getLogger(classOf[LinkPersistence])
     //implicit val han = LogHandler.jdkLogHandler
 
@@ -21,7 +21,10 @@ class LinkPersistence(transactor: Transactor[IO]){
         override def toString = ScalaRunTime._toString(this)
 
         def toEntity(): entity.Link = {
-            new entity.Link(id,title,url,publication_date)
+            val feed = feedsRepository.findOne(feed_id)
+            val link = new entity.Link(id,title,url,publication_date)
+            link.setFeed(feed)
+            link
         } 
     }
 
@@ -32,26 +35,23 @@ class LinkPersistence(transactor: Transactor[IO]){
             .transact(transactor)
     }
 
-    def countByUrl(url: String): IO[Option[Int]] = {
+    def countByUrl(url: String): IO[Int] = {
         sql"select count(*) from links where url=$url"
             .query[Int]
-            .option
+            .unique
             .transact(transactor)
     }
 
-    def insert(link: entity.Link, foundLinksCount: Option[Int], maxId: Int): IO[Int] = {
-        logger.info("Link: " + link.toString() + " links count: " + foundLinksCount)
-        if(foundLinksCount == Some(0)){
+    def insert(link: entity.Link, maxId: Int): IO[Int] =  {
             logger.info("Inserting link: " + link.toString())
             sql"insert into links (id,title,url,publication_date,feed_id) values (${maxId + 1},${link.getTitle},${link.getUrl},${link.getPublicationDate},${link.getFeed.getId})"
                 .update
                 //.withUniqueGeneratedKeys[Int]("id")
                 .run
                 .transact(transactor)
-        }else{
-            IO.pure(0)
+
         }
-    }
+    
 
     def findByFeedIds(notSentFeeds: List[Long]) = {
         val idList = notSentFeeds.mkString(",")

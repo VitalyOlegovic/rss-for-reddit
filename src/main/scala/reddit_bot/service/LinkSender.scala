@@ -56,7 +56,7 @@ class LinkSender(
         ) : List[Link] = {
         val feeds = feedsRepository.findBySubreddit(subreddit).asScala.toSet
         val notSentFeeds = feeds.map(_.getId).removedAll(feedsSoFar).toList
-        val links = new LinkPersistence(Database.transactor()).findByFeedIds( notSentFeeds).unsafeRunSync()
+        val links = new LinkPersistence(Database.transactor(), feedsRepository).findByFeedIds( notSentFeeds).unsafeRunSync()
         enforceOneLinkForSource( links.map(_.toEntity) )
     }
 

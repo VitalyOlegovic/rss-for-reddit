@@ -26,6 +26,8 @@ class LinkUpdater(
     private val logger = LoggerFactory.getLogger(classOf[LinkUpdater])
 
     private[service] val rssFeedReader = new RSSFeedReader
+    val linkPersistence = new LinkPersistence(Database.transactor(), feedsRepository)
+
 
     def getFeeds(): IO[List[Feed]] = 
         for{
@@ -36,9 +38,8 @@ class LinkUpdater(
     
 
     def updateFeeds(): Unit = {
-        val linkPersistence = new LinkPersistence(Database.transactor())
-
-        val links: IO[List[Int]] = for{
+        
+        val links: IO[List[Option[Int]]] = for{
             feeds <- getFeeds()
             ls = feeds
                 .map(x => Try(rssFeedReader.readFeedItems(x)))
@@ -49,9 +50,9 @@ class LinkUpdater(
             result <- ls.traverse(
                 (link: Link) => 
                     for{
-                        foundLinksCount: Option[Int] <- linkPersistence.countByUrl(link.getUrl())
+                        foundLinksCount: Int <- linkPersistence.countByUrl(link.getUrl())
                         maxId <- linkPersistence.maxId()
-                        n: Int <- linkPersistence.insert(link, foundLinksCount, maxId)
+                        n: Option[Int] <- insertIfNotPresent(link, foundLinksCount, maxId)
                         
                     }yield(n)
             )
@@ -59,4 +60,11 @@ class LinkUpdater(
         }yield(result)
         links.unsafeRunSync()
     }
+
+    def insertIfNotPresent(link: Link, foundLinksCount: Int, maxId: Int): IO[Option[Int]] = 
+        foundLinksCount match{
+            case 0 => linkPersistence.insert(link, maxId).map(Option(_))
+            case _ => IO.pure(None)
+        }
+    
 }
