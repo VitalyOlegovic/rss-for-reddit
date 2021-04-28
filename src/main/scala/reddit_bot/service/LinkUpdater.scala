@@ -26,7 +26,7 @@ class LinkUpdater(
     private val logger = LoggerFactory.getLogger(classOf[LinkUpdater])
 
     private[service] val rssFeedReader = new RSSFeedReader
-    val linkPersistence = new LinkPersistence(Database.transactor(), feedsRepository)
+    val linkPersistence = new LinkPersistence(Database.transactor())
 
 
     def getFeeds(): IO[List[Feed]] = 

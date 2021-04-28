@@ -37,6 +37,15 @@ public class Link implements java.io.Serializable {
         this.url = url;
         this.publicationDate = publicationDate;
     }
+
+    public Link(long id, String title, String url, LocalDateTime publicationDate, Feed feed) {
+        this.id = id;
+        this.title = title;
+        this.url = url;
+        this.publicationDate = publicationDate;
+        this.feed = feed;
+    }
+
     public Link(long id, Feed feed, String title, String url, LocalDateTime publicationDate, Set<LinkSending> linkSendings) {
         this.id = id;
         this.feed = feed;

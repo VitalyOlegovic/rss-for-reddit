@@ -17,20 +17,11 @@ import java.time.Month
 import scala.runtime.ScalaRunTime
 import org.slf4j.LoggerFactory
 
-class LinkPersistence(transactor: Transactor[IO], feedsRepository: FeedsRepository){
+class LinkPersistence(transactor: Transactor[IO]){
     private val logger = LoggerFactory.getLogger(classOf[LinkPersistence])
     //implicit val han = LogHandler.jdkLogHandler
 
-    case class Link(id: Long, title: String, url: String, publication_date: LocalDateTime, feed_id: Long){
-        override def toString = ScalaRunTime._toString(this)
 
-        def toEntity(): entity.Link = {
-            val feed = feedsRepository.findOne(feed_id)
-            val link = new entity.Link(id,title,url,publication_date)
-            link.setFeed(feed)
-            link
-        } 
-    }
 
     def findByUrl(url: String): IO[List[Link]] = {
         sql"select id,title,url,publication_date,feed_id from links where url=$url"
@@ -46,7 +37,7 @@ class LinkPersistence(transactor: Transactor[IO], feedsRepository: FeedsReposito
             .transact(transactor)
     }
 
-    def insert(link: entity.Link, maxId: Int): IO[Int] =  {
+    def insert(link: entity.Link, maxId: Long): IO[Int] =  {
             logger.info("Inserting link: " + link.toString())
             val publication_date = Option(link.getPublicationDate).getOrElse(LocalDateTime.of(1970, Month.JANUARY,1,0,0))
             sql"""insert into links (id,title,url,publication_date,feed_id) 
@@ -77,4 +68,15 @@ class LinkPersistence(transactor: Transactor[IO], feedsRepository: FeedsReposito
             .unique
             .transact(transactor)
     }
+}
+
+case class Link(id: Long, title: String, url: String, publication_date: LocalDateTime, feed_id: Long){
+    override def toString = ScalaRunTime._toString(this)
+
+    def toEntity(transactor: Transactor[IO]): IO[entity.Link] = {
+        for{
+            feed <- new FeedPersistence(transactor).findOne(feed_id).map(_.toEntity())
+            link = new entity.Link(id,title,url,publication_date, feed)
+        }yield link
+    } 
 }
