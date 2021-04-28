@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.time.LocalDateTime;
 
 @Service
 public class RSSFeedReader {
@@ -87,7 +88,8 @@ public class RSSFeedReader {
                 }
 
                 link.setTitle(StringEscapeUtils.unescapeHtml4(link.getTitle()));
-                link.setPublicationDate(syndEntry.getPublishedDate());
+                LocalDateTime ldt = new java.sql.Timestamp(syndEntry.getPublishedDate().getTime()).toLocalDateTime();
+                link.setPublicationDate(ldt);
                 link.setFeed(feed);
 
                 feeds.add(link);

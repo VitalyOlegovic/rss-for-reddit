@@ -1,6 +1,7 @@
 package reddit_bot.domain.entity;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -20,9 +21,9 @@ public class Link implements java.io.Serializable {
     private String title;
     @Column(name="url", nullable=false)
     private String url;
-    @Temporal(TemporalType.TIMESTAMP)
+    //@Temporal(TemporalType.TIMESTAMP)
     @Column(name="publication_date", nullable=false)
-    private Date publicationDate;
+    private LocalDateTime publicationDate;
     @OneToMany(fetch=FetchType.LAZY, mappedBy="link")
     private Set<LinkSending> linkSendings = new HashSet<LinkSending>(0);
 
@@ -30,13 +31,13 @@ public class Link implements java.io.Serializable {
     }
 
 
-    public Link(long id, String title, String url, Date publicationDate) {
+    public Link(long id, String title, String url, LocalDateTime publicationDate) {
         this.id = id;
         this.title = title;
         this.url = url;
         this.publicationDate = publicationDate;
     }
-    public Link(long id, Feed feed, String title, String url, Date publicationDate, Set<LinkSending> linkSendings) {
+    public Link(long id, Feed feed, String title, String url, LocalDateTime publicationDate, Set<LinkSending> linkSendings) {
         this.id = id;
         this.feed = feed;
         this.title = title;
@@ -83,11 +84,11 @@ public class Link implements java.io.Serializable {
     }
 
 
-    public Date getPublicationDate() {
+    public LocalDateTime getPublicationDate() {
         return this.publicationDate;
     }
 
-    public void setPublicationDate(Date publicationDate) {
+    public void setPublicationDate(LocalDateTime publicationDate) {
         this.publicationDate = publicationDate;
     }
 

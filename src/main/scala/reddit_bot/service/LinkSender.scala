@@ -39,6 +39,7 @@ class LinkSender(
         val sentSoFar = sentLinksCounting.countLinksSentRecently(subreddit)
         if(sentSoFar < subreddit.getDailyQuota){
             val feedsSoFar: scala.collection.immutable.Set[Long] = sentLinksCounting.feedsSentRecently(subreddit)
+            logger.info("Feeds so far: " + sentSoFar + " daily quota: " + subreddit.getDailyQuota)
             val links = findLinksToSend(subreddit, feedsSoFar).toSet
             links
                 .take(subreddit.getDailyQuota - sentSoFar)
@@ -56,8 +57,9 @@ class LinkSender(
         ) : List[Link] = {
         val feeds = feedsRepository.findBySubreddit(subreddit).asScala.toSet
         val notSentFeeds = feeds.map(_.getId).removedAll(feedsSoFar).toList
-        val links = new LinkPersistence(Database.transactor(), feedsRepository).findByFeedIds( notSentFeeds).unsafeRunSync()
-        enforceOneLinkForSource( links.map(_.toEntity) )
+        val links = new LinkPersistence(Database.transactor(), feedsRepository).findNotSentByFeedIds( notSentFeeds).unsafeRunSync()
+        // enforceOneLinkForSource( links )
+        links.map(_.toEntity)
     }
 
     def enforceOneLinkForSource(links: List[Link]): List[Link] = {
