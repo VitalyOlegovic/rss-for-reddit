@@ -27,7 +27,7 @@ class FeedSubredditPersistence(transactor: Transactor[IO]){
     }
 }
 
-case class FeedSubreddit(feedId:Long, subredditId: Long, flair: String){
+case class FeedSubreddit(feedId:Long, subredditId: Long, flair: Option[String]){
     override def toString = ScalaRunTime._toString(this)
 
 }

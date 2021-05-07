@@ -54,9 +54,7 @@ class LinkPersistence(transactor: Transactor[IO]){
         val idList = notSentFeeds.mkString(",")
         sql"""select id,title,url,publication_date,feed_id 
         from links l where feed_id in ($idList) 
-        and not exists (select * from link_sending ls where ls.link_id = l.id) 
-        and not exists (select * from links l2 where l2.feed_id=l.feed_id and l2.publication_date < l.publication_date)
-        order by links.publication_date desc"""
+        order by l.publication_date desc"""
             .query[Link]
             .to[List]
             .transact(transactor)

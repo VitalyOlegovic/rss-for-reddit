@@ -26,14 +26,13 @@ import reddit_bot.infrastructure.repository.Link
 import reddit_bot.infrastructure.repository.FeedSubredditPersistence
 import reddit_bot.infrastructure.repository.LinkSending
 import reddit_bot.infrastructure.repository.LinkSendingPersistence
+import scala.util.Failure
+import scala.util.Success
 
 @Service
 class LinkSender(
-    @Autowired linkSendingRepository: LinkSendingRepository,
-    @Autowired feedsRepository: FeedsRepository,
     @Autowired sentLinksCounting: SentLinksCounting,
     @Autowired redditSubmitter: RedditSubmitter,
-    @Autowired feedSubredditRepository: FeedSubredditRepository,
     @Autowired subredditRepository: SubredditRepository
 ){
 
@@ -58,7 +57,7 @@ class LinkSender(
                 result <- linksToSend.traverse{
                         link => for{
                             feedSubreddit <- feedSubredditPersistence.getFeedSubreddit(subreddit.getId(), link.feed_id)
-                            result = submitLink(subreddit, link, Option(feedSubreddit.flair))
+                            result = submitLink(subreddit, link, feedSubreddit.flair)
                         } yield result
                     }
             }yield result
@@ -73,21 +72,21 @@ class LinkSender(
                 feeds <- feedPersistence.findBySubredditId(subreddit.getId())
                 notSentFeeds = feeds.map(_.id).toSet.removedAll(feedsSoFar).toList
                 links: List[Link] <- linkPersistence.findNotSentByFeedIds( notSentFeeds)
-                //entities <- links.traverse(_.toEntity)            
-            } yield links
+                oneForSourceLinks = enforceOneLinkForSource(links)            
+            } yield oneForSourceLinks
     }
 
-    def enforceOneLinkForSource(links: List[entity.Link]): List[entity.Link] = {
+    def enforceOneLinkForSource(links: List[Link]): List[Link] = {
         links
-            .groupBy(_.getFeed().getId())
+            .groupBy(_.feed_id)
             .map( 
                 _._2
-                    .sortBy( _.getPublicationDate() )
+                    .sortBy( _.publication_date )
                     .reverse
                     .head 
             )
             .toList
-            .sortBy(_.getPublicationDate())
+            .sortBy(_.publication_date)
             .reverse
     }
 
@@ -102,7 +101,7 @@ class LinkSender(
     def submitLink(subreddit: entity.Subreddit, link: Link, maybeFlair: Option[String]): Try[Unit] = {
         logger.info("Current linkBean: " + link)
 
-        Try{
+        val result: Try[Unit] = Try{
             maybeFlair
                 .map(
                     flair =>  redditSubmitter.submitLink(subreddit.getName, new URL(link.url), link.title, flair)
@@ -110,12 +109,21 @@ class LinkSender(
                 .getOrElse( redditSubmitter.submitLink(subreddit.getName, new URL(link.url), link.title) )
 
             val linkSending = new LinkSending(link.id,LocalDateTime.now(),subreddit.getId())
-            linkSendingPersistence.save(linkSending)
+            
+            val io = for{
+                r: Int <- linkSendingPersistence.save(linkSending)
+            } yield r
+
+            io.unsafeRunSync()
 
             if(! subreddit.getModerator){
                 waitSomeTime()
             }
         }
+
+        println(result)
+
+        result
     }
 
     def waitSomeTime() : Unit = {

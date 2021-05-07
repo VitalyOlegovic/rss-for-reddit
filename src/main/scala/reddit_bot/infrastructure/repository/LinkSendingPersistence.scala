@@ -22,7 +22,7 @@ import doobie.free.connection
 class LinkSendingPersistence(transactor: Transactor[IO]){
     def save(linkSending: LinkSending): IO[Int] = {
         for{
-            id <- sql"select max(id) +1 from link_sending".query[Long].unique.transact(transactor)
+            id <- sql"select max(id) +1 from link_sending".query[Option[Long]].unique.transact(transactor)
             result <- sql"insert into link_sending values ($id,${linkSending.linkId},${linkSending.sendingDate},${linkSending.subredditId})".update.run.transact(transactor)
         }yield result
     }
