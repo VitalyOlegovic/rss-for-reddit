@@ -23,8 +23,32 @@ class LinkSendingPersistence(transactor: Transactor[IO]){
     def save(linkSending: LinkSending): IO[Int] = {
         for{
             id <- sql"select max(id) +1 from link_sending".query[Option[Long]].unique.transact(transactor)
-            result <- sql"insert into link_sending values ($id,${linkSending.linkId},${linkSending.sendingDate},${linkSending.subredditId})".update.run.transact(transactor)
+            result <- sql"insert into link_sending values ($id,${linkSending.linkId},${linkSending.sendingDate},${linkSending.subredditId})"
+                .update.run.transact(transactor)
         }yield result
+    }
+
+    def countLinksSentAfter(subredditId: Long, date: Date): IO[Option[Int]] = {
+        sql"select count(1) from link_sending where subreddit_id = $subredditId and sending_date >= $date"
+            .query[Option[Int]]
+            .unique
+            .transact(transactor)
+
+    }
+
+    def linksSentAfter(subredditId: Long, date: Date): IO[Option[Int]] = {
+        sql"select distinct(id) from link_sending where subreddit_id = $subredditId and sending_date >= $date"
+            .query[Option[Int]]
+            .unique
+            .transact(transactor)
+
+    }
+
+    def feedsSentAfter(subredditId: Long, date: Date): IO[List[Int]] = {
+        sql"select distinct(l.feed_id) from link_sending ls join link l on ls.link_id = l.id where subreddit_id = $subredditId and sending_date >= $date"
+            .query[Int]
+            .to[List]
+            .transact(transactor)
     }
 }
 

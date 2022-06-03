@@ -3,7 +3,7 @@ package reddit_bot.infrastructure.repository
 import doobie._
 import doobie.implicits._
 import doobie.implicits.javasql._
-import doobie.implicits.javatime._ 
+import doobie.implicits.javatimedrivernative._
 import doobie.util.ExecutionContexts
 import cats._
 import cats.data._

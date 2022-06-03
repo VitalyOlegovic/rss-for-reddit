@@ -3,27 +3,32 @@ package reddit_bot.infrastructure.endpoint
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
-import reddit_bot.domain.entity.{Link, LinkSending, Subreddit}
-import reddit_bot.infrastructure.repository.{LinkSendingRepository, SubredditRepository}
+import reddit_bot.domain.entity.{Link, Subreddit}
 import reddit_bot.service.LinkSender
 
 import java.net.URL
 import java.util.Date
 import scala.jdk.CollectionConverters._
+import reddit_bot.infrastructure.repository.SubredditPersistence
+import reddit_bot.infrastructure.repository.Database
+import reddit_bot.infrastructure.repository.LinkSendingPersistence
+import reddit_bot.infrastructure.repository.LinkSending
+import java.time.LocalDateTime
 
 @Service
 class RedditSender(
-    @Autowired subredditRepository: SubredditRepository,
     @Autowired redditSubmitter: RedditSubmitter,
-    @Autowired linkSendingRepository: LinkSendingRepository,
     @Autowired linkSender: LinkSender
 ){
     private val logger = LoggerFactory.getLogger(classOf[RedditSender])
+    private val subredditPersistence = new SubredditPersistence(Database.transactor)
+    private val linkSendingPersistence = new LinkSendingPersistence(Database.transactor)
 
     def send: Unit = {
-        subredditRepository.findEnabled()
-            .asScala
-            .foreach( linkSender.sendLinks(_) )
+        for{
+            enabled <- subredditPersistence.findEnabled()
+            r = enabled.foreach( linkSender.sendLinks(_) )
+        } yield r
     }
 
     def submitLink(subreddit: Subreddit, link: Link, maybeFlair: Option[String]): Unit = {
@@ -36,8 +41,8 @@ class RedditSender(
                 )
                 .getOrElse( redditSubmitter.submitLink(subreddit.getName, new URL(link.getUrl), link.getTitle) )
 
-            val linkSending = new LinkSending(link,subreddit, new Date())
-            linkSendingRepository.save(linkSending)
+            val linkSending = LinkSending(-1, link.getId(),LocalDateTime.now(),subreddit.getId() )
+            linkSendingPersistence.save(linkSending)
 
             if(! subreddit.getModerator){
                 waitSomeTime()

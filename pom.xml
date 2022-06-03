@@ -18,7 +18,7 @@
     <properties>
         <spring.version>1.5.10.RELEASE</spring.version>
         <start-class>reddit_bot.SpringBootStart</start-class>
-        <scala.version>2.13.5</scala.version>
+        <scala.version>2.13.8</scala.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
@@ -83,7 +83,7 @@
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
-            <version>1.4.200</version>
+            <version>2.1.212</version>
         </dependency>
 
 

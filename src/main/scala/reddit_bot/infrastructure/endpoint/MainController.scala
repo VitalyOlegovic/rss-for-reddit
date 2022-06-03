@@ -12,7 +12,7 @@ import reddit_bot.infrastructure.repository.Database
 @Controller
 class MainController(
     @Autowired linkUpdater: LinkUpdater,
-    @Autowired linkSender: LinkSender
+    @Autowired redditSender: RedditSender
 ){
 
     @RequestMapping(Array("/updateLinks"))
@@ -25,7 +25,7 @@ class MainController(
     @RequestMapping(Array("/linksSend"))
     @ResponseBody
     def linksSend() : String = {
-        linkSender.send
+        redditSender.send
         "Links sent"
     }
 

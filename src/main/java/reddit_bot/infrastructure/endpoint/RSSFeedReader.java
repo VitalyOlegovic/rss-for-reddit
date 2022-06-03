@@ -10,10 +10,10 @@ import com.rometools.rome.feed.synd.SyndEntry;
 import com.rometools.rome.feed.synd.SyndFeed;
 import com.rometools.rome.io.SyndFeedInput;
 import com.rometools.rome.io.XmlReader;
-import reddit_bot.domain.entity.Feed;
 import reddit_bot.domain.entity.Link;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import reddit_bot.infrastructure.repository.FeedPersistence.Feed;
 
 import java.io.IOException;
 import java.net.URL;
@@ -63,14 +63,14 @@ public class RSSFeedReader {
         URL url = null;
 
         try {
-            url = new URL(feed.getUrl());
+            url = new URL(feed.url());
             SyndFeedInput input = new SyndFeedInput();
             SyndFeed syndFeed = input.build(new XmlReader(url));
 
             List<SyndEntry> entryList = syndFeed.getEntries();
 
             for(SyndEntry syndEntry : entryList){
-
+                // TODO Use doobie instead of JPA to persist the entities persisted here
                 Link link = new Link();
                 link.setTitle(syndEntry.getTitle());
 
