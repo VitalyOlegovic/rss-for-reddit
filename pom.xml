@@ -18,7 +18,7 @@
     <properties>
         <spring.version>1.5.10.RELEASE</spring.version>
         <start-class>reddit_bot.SpringBootStart</start-class>
-        <scala.version>2.13.5</scala.version>
+        <scala.version>2.13.9</scala.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
